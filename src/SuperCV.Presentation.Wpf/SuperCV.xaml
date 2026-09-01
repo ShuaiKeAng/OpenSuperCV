@@ -1,0 +1,399 @@
+<Window x:Class="SuperCV.SuperCVWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SuperCV"
+        mc:Ignorable="d"
+        Title="SuperCV" Width="310" Height="70"
+        x:Name="MainWindowShell"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        Opacity="{Binding Opacity, Source={x:Static local:MainSurfaceAppearanceState.Current}, Mode=OneWay}"
+        Topmost="True"
+        ResizeMode="NoResize" Closing="Window_Closing"
+        
+        >
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type local:WorkspaceMenuItem}">
+            <Grid Height="20">
+                <Grid x:Name="WorkspaceRow"
+                      Margin="2,0"
+                      MouseRightButtonUp="WorkspaceRow_MouseRightButtonUp">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Margin="5,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="12"
+                               Foreground="{DynamicResource Brush.Text.Muted}"
+                                Text="{Binding DisplayName}"
+                               TextTrimming="CharacterEllipsis"/>
+                    
+                    <Button Grid.Column="1"
+                            Margin="0,2"
+                            Style="{StaticResource WorkspaceDeleteButtonStyle}"
+                            IsEnabled="{Binding CanDelete}"
+                            Click="WorkspaceDeleteButton_Click"
+                            ToolTip="删除工作区"
+                            AutomationProperties.Name="删除工作区"
+                            HorizontalAlignment="Center"
+                            >
+                        <Viewbox Width="8"
+                                 Height="8"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center">
+                            <StaticResource ResourceKey="Close1"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+
+                <Button x:Name="AddWorkspaceButton"
+                        Visibility="Collapsed"
+                        Margin="0"
+                        Content="{Binding AddActionText}"
+                        FontSize="12"
+                        Style="{StaticResource WorkspaceAddButtonStyle}"
+                        Click="AddWorkspaceButton_Click"
+                        ToolTip="{Binding AddActionText}"
+                        AutomationProperties.Name="{Binding AddActionText}"/>
+            </Grid>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding IsAddAction}" Value="True">
+                    <Setter TargetName="WorkspaceRow" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="AddWorkspaceButton" Property="Visibility" Value="Visible"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+    </Window.Resources>
+    <Grid Margin="5">
+        <local:CrispShadowBorder CornerRadius="20"
+            Background="{DynamicResource Brush.Surface.Window}"
+            Margin="10">
+            <local:CrispShadowBorder.ShadowEffect>
+                <DropShadowEffect BlurRadius="10" 
+                              ShadowDepth="0" 
+                              Color="{DynamicResource Color.Shadow.Surface}"
+                                  RenderingBias="Performance"
+                              Opacity="0.7"/>
+
+            </local:CrispShadowBorder.ShadowEffect>
+            <Grid RenderOptions.ClearTypeHint="Enabled">
+                
+                    <Grid Background="Transparent" MouseLeftButtonDown="Grid_MouseLeftButtonDown" Height="40" VerticalAlignment="Top" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45"/>
+                        <ColumnDefinition/>
+
+
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="35"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource baseButtonStyle}" Margin="5,5,10,5" Grid.Column="0" Background="{DynamicResource Brush.Surface.Raised}" Click="Button_Click_1" MouseDoubleClick="Button_MouseDoubleClick" PreviewMouseLeftButtonDown="Button_PreviewMouseLeftButtonDown">
+                        <Grid x:Name="FuzzySearchStatusIcon"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Center">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="LoadingStates">
+                                    <VisualState x:Name="NormalState">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PrimaryActionIcon"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="FuzzySearchLoadingIcon"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="FuzzySearchLoadingRotation"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             To="0"
+                                                             Duration="0:0:0"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="LoadingState">
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PrimaryActionIcon"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Collapsed}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="FuzzySearchLoadingIcon"
+                                                                           Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <DoubleAnimation Storyboard.TargetName="FuzzySearchLoadingRotation"
+                                                             Storyboard.TargetProperty="Angle"
+                                                             From="0"
+                                                             To="360"
+                                                             Duration="0:0:0.85"
+                                                             RepeatBehavior="Forever"/>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <Viewbox x:Name="PrimaryActionIcon" Width="20" Height="20">
+                                <ContentControl Content="{Binding CurrentIcon, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Viewbox>
+                            <Viewbox x:Name="FuzzySearchLoadingIcon" Width="20" Height="20" Visibility="Collapsed">
+                                <Grid Width="20" Height="20">
+                                    <Ellipse Width="20"
+                                             Height="20"
+                                             Stroke="{DynamicResource Brush.Ai.ProgressTrack}"
+                                             StrokeThickness="2"/>
+                                    <Path Data="M 3.64,3.64 A 9,9 0 1 1 3.64,16.36"
+                                          StrokeThickness="2.25"
+                                          StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round"
+                                          RenderTransformOrigin="0.5,0.5">
+                                        <Path.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="{DynamicResource Color.AiAccent.Start}" Offset="0.0"/>
+                                                <GradientStop Color="{DynamicResource Color.AiAccent.Middle}" Offset="0.5"/>
+                                                <GradientStop Color="{DynamicResource Color.AiAccent.End}" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Path.Stroke>
+                                        <Path.RenderTransform>
+                                            <RotateTransform x:Name="FuzzySearchLoadingRotation"/>
+                                        </Path.RenderTransform>
+                                    </Path>
+                                </Grid>
+                            </Viewbox>
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource baseButtonStyle}" Margin="0,5,5,5" Grid.Column="2" Background="{DynamicResource Brush.Surface.Raised}" Click="Button_Click_2" ToolTip="展开更多选项">
+                        <Viewbox  Width="17" Height="17">
+                            <StaticResource ResourceKey="Menu" />
+                        </Viewbox>
+                    </Button>
+                    <Button Style="{StaticResource baseButtonStyle}" Margin="0,5,5,5" Grid.Column="3" Background="{DynamicResource Brush.Surface.Raised}" Click="Button_Click" ToolTip="关闭窗口">
+                        <Viewbox  Width="15" Height="15">
+                            <StaticResource ResourceKey="Close" />
+                        </Viewbox>
+                    </Button>
+                    <local:MyTextBox  Grid.Column="1" x:Name="text1" HorizontalAlignment="Right"  Margin="0,5,5,5" EnterKeyDown="OnEnterKeyDown" SearchCancel="text1_SearchCancel" FilterModeChanged="text1_FilterModeChanged" />
+                </Grid>
+
+                <Grid Margin="0,40,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+                    
+
+
+
+
+                    <local:CrispShadowBorder Margin="5,0,5,5" Background="{DynamicResource Brush.Surface.Raised}" CornerRadius="15" Grid.Row="0">
+                        <local:CrispShadowBorder.ShadowEffect>
+                            <DropShadowEffect BlurRadius="5" 
+                  ShadowDepth="0" 
+                                              Direction="90"
+                  Color="{DynamicResource Color.Shadow.Content}"
+                  Opacity="0.5"/>
+
+                        </local:CrispShadowBorder.ShadowEffect>
+                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100" />
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox x:Name="WorkspaceComboBox"
+                                      Grid.Column="0"
+                                      Height="24"
+                                      Margin="3"
+                                      Style="{StaticResource WorkspaceComboBoxStyle}"
+                                      ItemsSource="{Binding WorkspaceItems}"
+                                      SelectedItem="{Binding SelectedWorkspaceItem, Mode=TwoWay}"
+                                      SelectionChanged="WorkspaceComboBox_SelectionChanged"
+                                      ToolTip="选择工作区"
+                                      AutomationProperties.Name="工作区"/>
+
+
+                                <Border Width="1" Background="{DynamicResource Brush.Separator.Strong}" HorizontalAlignment="Right" Margin="0,5" Grid.Column="0"/>
+                                <StackPanel  Grid.Column="1" Orientation="Horizontal" FlowDirection="RightToLeft" Margin="1">
+                                <ToggleButton 
+HorizontalAlignment="Center"
+VerticalAlignment="Center"
+Margin="1.5"
+Style="{StaticResource RoundSwitchStyle}"
+IsChecked="{Binding DarkMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+Content="{StaticResource DarkModeSwitchIcon}"
+ToolTip="深色模式"
+AutomationProperties.Name="深色模式"/>
+                                <ToggleButton
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="1.5"
+                                              Style="{StaticResource RoundSwitchStyle}"
+                                              IsChecked="{Binding AreVisible, Source={x:Static local:CvActionButtonsVisibilityState.Current}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Content="{StaticResource CvActionButtonsSwitchIcon}"
+                                              ToolTip="显示条目左侧按钮"
+                                              AutomationProperties.Name="显示条目左侧按钮"/>
+
+                                
+
+                                <ToggleButton 
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="1.5"
+                                              Style="{StaticResource RoundSwitchStyle}"
+                                              IsChecked="{Binding MonitorCV, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                              Content="{StaticResource ListUpdateSwitchIcon}"
+                                              ToolTip="列表更新"
+                                              AutomationProperties.Name="列表更新"/>
+
+                                <Button Style="{StaticResource roundButtonStyle2}"
+                                        Margin="1.5"
+                                        Width="25"
+                                        Height="25"
+                                        Click="ClearButton_Click"
+                                        ToolTip="清空当前工作区"
+                                        AutomationProperties.Name="清空当前工作区">
+                                    <Viewbox Width="18" Height="18">
+                                        <StaticResource ResourceKey="Delete1"/>
+                                    </Viewbox>
+                                </Button>
+
+                                <Button Style="{StaticResource roundButtonStyle2}"
+                                        Margin="1.5"
+                                        Width="25"
+                                        Height="25"
+                                        Click="CreateBlankButton_Click"
+                                        ToolTip="新建空白"
+                                        AutomationProperties.Name="新建空白">
+                                    <Viewbox Width="16"
+                                             Height="16"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stretch="Uniform"
+                                             UseLayoutRounding="True"
+                                             SnapsToDevicePixels="True">
+                                        <Viewbox.RenderTransform>
+                                            <TranslateTransform X="0.5"/>
+                                        </Viewbox.RenderTransform>
+                                        <StaticResource ResourceKey="CreateBlankIcon"/>
+                                    </Viewbox>
+                                </Button>
+
+                                <Button Style="{StaticResource roundButtonStyle2}"
+                                        Margin="1.5"
+                                        Width="25"
+                                        Height="25"
+                                        Click="BackToTopButton_Click"
+                                        ToolTip="返回顶部"
+                                        AutomationProperties.Name="返回顶部">
+                                    <Viewbox Width="16"
+                                             Height="16"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Stretch="Uniform"
+                                             UseLayoutRounding="True"
+                                             SnapsToDevicePixels="True">
+                                        <Viewbox.RenderTransform>
+                                            <TranslateTransform X="-0.1" Y="-0.5"/>
+
+                                        </Viewbox.RenderTransform>
+                                        <StaticResource ResourceKey="BackToTopIcon"/>
+                                    </Viewbox>
+                                </Button>
+
+
+
+
+                            </StackPanel>
+
+                        </Grid>
+
+                    </local:CrispShadowBorder>
+
+
+                    <local:CrispShadowBorder Margin="5,0,5,5" CornerRadius="15" Background="{DynamicResource Brush.Surface.Raised}" Grid.Row="1" MouseEnter="Border_MouseEnter">
+                        <local:CrispShadowBorder.ShadowEffect>
+                            <DropShadowEffect BlurRadius="5" 
+                  ShadowDepth="0" 
+                                              Direction="270"
+                  Color="{DynamicResource Color.Shadow.Content}"
+                  Opacity="0.5"/>
+
+                        </local:CrispShadowBorder.ShadowEffect>
+                           
+                       <ScrollViewer x:Name="horizontalScrollViewer"
+                                     RenderOptions.ClearTypeHint="Enabled"
+
+                                            PreviewMouseWheel="StackPanel_PreviewMouseWheel" 
+                                            HorizontalScrollBarVisibility="Hidden"
+                                            VerticalScrollBarVisibility="Disabled">
+
+                                <ScrollViewer.Clip>
+                                    <RectangleGeometry RadiusX="15" RadiusY="15"
+                                            Rect="1,0,268,30"/>
+                                </ScrollViewer.Clip>
+
+
+                            <Grid>
+                                <!-- 使用 ItemsControl 代替 StackPanel，更适合动态内容 -->
+                                <ItemsControl x:Name="BookmarksList"
+                                              VerticalAlignment="Center"
+                                              SnapsToDevicePixels="True"
+                                              UseLayoutRounding="True">
+                                    <ItemsControl.ItemContainerStyle>
+                                        <Style TargetType="ContentControl">
+                                            <!-- 或者如果你的控件继承自Button -->
+                                            <!-- <Style TargetType="Button"> -->
+                                            <Setter Property="SnapsToDevicePixels" Value="True"/>
+                                            <Setter Property="UseLayoutRounding" Value="True"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        </Style>
+                                    </ItemsControl.ItemContainerStyle>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"
+                                                        VerticalAlignment="Center"
+                                                        SnapsToDevicePixels="True"
+                                                        UseLayoutRounding="True"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+
+                                <TextBlock Text="暂无书签" 
+                                         
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Center"
+                   Foreground="{DynamicResource Brush.Text.Muted}"
+                                           FontSize="16"
+                   FontStyle="Italic">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ElementName=BookmarksList, Path=HasItems}" 
+                                     Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </ScrollViewer>
+
+
+
+
+                    </local:CrispShadowBorder>
+                </Grid>
+            </Grid>
+
+
+
+        </local:CrispShadowBorder>
+
+    </Grid>
+</Window>

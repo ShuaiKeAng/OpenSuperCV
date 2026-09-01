@@ -1,0 +1,67 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Effect colors -->
+    <Color x:Key="Color.Shadow.Surface">#AA8D8D8D</Color>
+    <Color x:Key="Color.Shadow.Content">#AABBBBBB</Color>
+    <Color x:Key="Color.Shadow.Icon">#666666</Color>
+
+    <!-- Interactive colors -->
+    <Color x:Key="Color.Toggle.TrackOff">#E0E0E0</Color>
+    <Color x:Key="Color.Toggle.TrackOn">#55FF55</Color>
+    <Color x:Key="Color.Toggle.TrackOnHover">#B0F0B0</Color>
+    <Color x:Key="Color.Toggle.Thumb">#FFFFFF</Color>
+    <Color x:Key="Color.Toggle.ThumbHover">#F5F5F5</Color>
+
+    <!-- AI accent colors -->
+    <Color x:Key="Color.AiAccent.Start">#2563EB</Color>
+    <Color x:Key="Color.AiAccent.Middle">#5B5CE2</Color>
+    <Color x:Key="Color.AiAccent.End">#8B5CF6</Color>
+
+    <!-- Surface and raised-content brushes -->
+    <SolidColorBrush x:Key="Brush.Surface.Window" Color="#FFEEEEF2"/>
+    <SolidColorBrush x:Key="Brush.Surface.Subtle" Color="#FFF6F7F8"/>
+    <SolidColorBrush x:Key="Brush.Surface.Raised" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.Text.OnAccent" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.Icon.OnAccent" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="Brush.Border.Raised" Color="#FFFFFF"/>
+
+    <!-- Interaction, border, and indicator brushes -->
+    <SolidColorBrush x:Key="Brush.Control.FillSubtle" Color="#AAEEEEEE"/>
+    <SolidColorBrush x:Key="Brush.Control.FillMuted" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="Brush.Control.HoverSubtle" Color="#AAEEEEEE"/>
+    <SolidColorBrush x:Key="Brush.Control.Hover" Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="Brush.Control.FocusSubtle" Color="#AAEEEEEE"/>
+    <SolidColorBrush x:Key="Brush.Control.PressedSubtle" Color="#AADDDDDD"/>
+    <SolidColorBrush x:Key="Brush.Control.Pressed" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Brush.Control.Highlight" Color="#FFF9F9F9"/>
+    <SolidColorBrush x:Key="Brush.Selection.Range" Color="#AAEEEEEE"/>
+    <SolidColorBrush x:Key="Brush.Border.Control" Color="#CCCCCC"/>
+    <SolidColorBrush x:Key="Brush.Border.Soft" Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="Brush.Border.Muted" Color="#E0E0E0"/>
+    <SolidColorBrush x:Key="Brush.Border.Focus" Color="#AAAAAA"/>
+    <SolidColorBrush x:Key="Brush.Separator.Default" Color="#DDDDDD"/>
+    <SolidColorBrush x:Key="Brush.Separator.Strong" Color="#929292"/>
+    <SolidColorBrush x:Key="Brush.ScrollBar.Thumb" Color="#929292"/>
+    <SolidColorBrush x:Key="Brush.ScrollBar.ThumbSubtle" Color="#CCCCCC"/>
+
+    <!-- Overlay brushes -->
+    <SolidColorBrush x:Key="Brush.Overlay.Action" Color="#55555555"/>
+    <SolidColorBrush x:Key="Brush.Overlay.ActionHover" Color="#55777777"/>
+
+    <!-- Text, icon, and AI brushes -->
+    <SolidColorBrush x:Key="Brush.Text.Primary" Color="#222222"/>
+    <SolidColorBrush x:Key="Brush.Text.Secondary" Color="#424242"/>
+    <SolidColorBrush x:Key="Brush.Text.Muted" Color="#6E6E6E"/>
+    <SolidColorBrush x:Key="Brush.Text.Selection" Color="#6E6E6E"/>
+    <SolidColorBrush x:Key="Brush.Text.Caret" Color="#222222"/>
+    <SolidColorBrush x:Key="Brush.Icon.Primary" Color="#363636"/>
+    <SolidColorBrush x:Key="Brush.Icon.Muted" Color="#6E6E6E"/>
+    <SolidColorBrush x:Key="Brush.Icon.Subtle" Color="#929292"/>
+    <SolidColorBrush x:Key="Brush.Border.Default" Color="#929292"/>
+    <SolidColorBrush x:Key="Brush.Border.Subtle" Color="#C6C6C6"/>
+    <SolidColorBrush x:Key="Brush.Ai.ProgressTrack" Color="#1F2563EB"/>
+
+    <BitmapImage x:Key="WindowHeaderLogoSource"
+                 UriSource="pack://application:,,,/SuperCV;component/Assets/SuperCV.Remastered.png"/>
+</ResourceDictionary>

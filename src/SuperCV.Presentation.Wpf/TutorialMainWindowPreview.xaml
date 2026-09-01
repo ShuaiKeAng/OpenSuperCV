@@ -1,0 +1,230 @@
+<UserControl x:Class="SuperCV.TutorialMainWindowPreview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SuperCV"
+             Width="310"
+             Height="140"
+             IsHitTestVisible="False"
+             Focusable="False">
+    <Grid Margin="5">
+        <local:CrispShadowBorder Margin="10"
+                                 CornerRadius="20"
+                                 Background="{DynamicResource Brush.Surface.Window}">
+            <local:CrispShadowBorder.ShadowEffect>
+                <DropShadowEffect BlurRadius="10"
+                                  ShadowDepth="0"
+                                  Color="{DynamicResource Color.Shadow.Surface}"
+                                  RenderingBias="Performance"
+                                  Opacity="0.7"/>
+            </local:CrispShadowBorder.ShadowEffect>
+            <Grid RenderOptions.ClearTypeHint="Enabled">
+                <Grid Height="40" VerticalAlignment="Top" Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="45"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="35"/>
+                        <ColumnDefinition Width="35"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0"
+                            Margin="5,5,10,5"
+                            Style="{StaticResource baseButtonStyle}"
+                            Background="{DynamicResource Brush.Surface.Raised}">
+                        <Grid>
+                            <Ellipse Width="20"
+                                     Height="20"
+                                     Stroke="{DynamicResource Brush.Icon.Primary}"
+                                     StrokeThickness="2">
+                                <Ellipse.Style>
+                                    <Style TargetType="Ellipse">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDetailed, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Ellipse.Style>
+                            </Ellipse>
+                            <Viewbox Width="20" Height="20">
+                                <Viewbox.Style>
+                                    <Style TargetType="Viewbox">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsDetailed, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Viewbox.Style>
+                                <StaticResource ResourceKey="Gear"/>
+                            </Viewbox>
+                        </Grid>
+                    </Button>
+                    <Grid x:Name="CollapsedSearchPreview"
+                          Grid.Column="1" Width="160" Height="30" HorizontalAlignment="Right" Margin="0,5,5,5">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDetailed, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSearchExpanded, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Button Width="30"
+                                Height="30"
+                                Margin="0"
+                                HorizontalAlignment="Right"
+                                Style="{StaticResource baseButtonStyle}"
+                                Background="{DynamicResource Brush.Surface.Raised}">
+                            <Viewbox Width="15" Height="15">
+                                <StaticResource ResourceKey="Search"/>
+                            </Viewbox>
+                        </Button>
+                    </Grid>
+                    <Grid x:Name="ExpandedSearchPreview"
+                          Grid.Column="1" Width="160" Height="30" HorizontalAlignment="Right" Margin="0,5,5,5">
+                        <Grid.Style>
+                            <Style TargetType="Grid">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDetailed, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsSearchExpanded, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Grid.Style>
+                        <Border CornerRadius="15"
+                                Background="{DynamicResource Brush.Surface.Raised}"
+                                BorderBrush="{DynamicResource Brush.Border.Control}"
+                                BorderThickness="1">
+                            <TextBlock Margin="10,0,28,0"
+                                       VerticalAlignment="Center"
+                                       Text="{Binding SearchPreviewText, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}"
+                                       FontSize="14"
+                                       Foreground="{DynamicResource Brush.Text.Muted}"/>
+                        </Border>
+                        <Button Width="20" Height="20" Margin="5" HorizontalAlignment="Right"
+                                Style="{StaticResource baseButtonStyle}"
+                                Background="{DynamicResource Brush.Surface.Raised}">
+                            <Viewbox Width="12" Height="12"><StaticResource ResourceKey="Right"/></Viewbox>
+                        </Button>
+                    </Grid>
+                    <Button Grid.Column="2"
+                            Margin="0,5,5,5"
+                            Style="{StaticResource baseButtonStyle}"
+                            Background="{DynamicResource Brush.Surface.Raised}">
+                        <Viewbox Width="17" Height="17">
+                            <StaticResource ResourceKey="Menu"/>
+                        </Viewbox>
+                    </Button>
+                    <Button Grid.Column="3"
+                            Margin="0,5,5,5"
+                            Style="{StaticResource baseButtonStyle}"
+                            Background="{DynamicResource Brush.Surface.Raised}">
+                        <Viewbox Width="15" Height="15">
+                            <StaticResource ResourceKey="Close"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+
+                <Grid Margin="0,40,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+                    <local:CrispShadowBorder Grid.Row="0"
+                                             Margin="5,0,5,5"
+                                             CornerRadius="15"
+                                             Background="{DynamicResource Brush.Surface.Raised}">
+                        <local:CrispShadowBorder.ShadowEffect>
+                            <DropShadowEffect BlurRadius="5"
+                                              ShadowDepth="0"
+                                              Direction="90"
+                                              Color="{DynamicResource Color.Shadow.Content}"
+                                              Opacity="0.5"/>
+                        </local:CrispShadowBorder.ShadowEffect>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0"
+                                    Height="24"
+                                    Margin="3"
+                                    CornerRadius="12"
+                                    Background="{DynamicResource Brush.Control.FillSubtle}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="24"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Margin="8,0,-6,0"
+                                               VerticalAlignment="Center"
+                                               Text="{Binding WorkspacePreviewText, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}"
+                                               TextTrimming="CharacterEllipsis"
+                                               FontSize="12"
+                                               Foreground="{DynamicResource Brush.Text.Primary}"/>
+                                    <Path Grid.Column="1"
+                                          Data="M0,0 L8,0 L4,4 Z"
+                                          Fill="{DynamicResource Brush.Icon.Subtle}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <Border Grid.Column="0"
+                                    Width="1"
+                                    Margin="0,5"
+                                    HorizontalAlignment="Right"
+                                    Background="{DynamicResource Brush.Separator.Strong}"/>
+                            <StackPanel Grid.Column="1"
+                                        Margin="1"
+                                        Orientation="Horizontal"
+                                        FlowDirection="RightToLeft">
+                                <ToggleButton Margin="1.5" Style="{StaticResource RoundSwitchStyle}" Content="{StaticResource DarkModeSwitchIcon}"/>
+                                <ToggleButton Margin="1.5" Style="{StaticResource RoundSwitchStyle}" Content="{StaticResource CvActionButtonsSwitchIcon}" IsChecked="True"/>
+                                <ToggleButton Margin="1.5" Style="{StaticResource RoundSwitchStyle}" Content="{StaticResource ListUpdateSwitchIcon}" IsChecked="True"/>
+                                <Button Margin="1.5" Width="25" Height="25" Style="{StaticResource roundButtonStyle2}"><Viewbox Width="18" Height="18"><StaticResource ResourceKey="Delete1"/></Viewbox></Button>
+                                <Button Margin="1.5" Width="25" Height="25" Style="{StaticResource roundButtonStyle2}"><Viewbox Width="16" Height="16"><StaticResource ResourceKey="CreateBlankIcon"/></Viewbox></Button>
+                                <Button Margin="1.5" Width="25" Height="25" Style="{StaticResource roundButtonStyle2}"><Viewbox Width="16" Height="16"><StaticResource ResourceKey="BackToTopIcon"/></Viewbox></Button>
+                            </StackPanel>
+                        </Grid>
+                    </local:CrispShadowBorder>
+                    <local:CrispShadowBorder Grid.Row="1"
+                                             Margin="5,0,5,5"
+                                             CornerRadius="15"
+                                             Background="{DynamicResource Brush.Surface.Raised}">
+                        <local:CrispShadowBorder.Style>
+                            <Style TargetType="local:CrispShadowBorder"
+                                   BasedOn="{StaticResource {x:Type local:CrispShadowBorder}}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDetailed, RelativeSource={RelativeSource AncestorType=local:TutorialMainWindowPreview}}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </local:CrispShadowBorder.Style>
+                        <local:CrispShadowBorder.ShadowEffect>
+                            <DropShadowEffect BlurRadius="5" ShadowDepth="0" Direction="270"
+                                              Color="{DynamicResource Color.Shadow.Content}" Opacity="0.5"/>
+                        </local:CrispShadowBorder.ShadowEffect>
+                        <Grid ClipToBounds="True">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <local:CapsuleButton Text="电话" MaxWidth="78" CornerRadius="11" CapsuleBackground="{DynamicResource Brush.Surface.Subtle}"/>
+                                <local:CapsuleButton Text="电子邮箱" MaxWidth="132" CornerRadius="11" CapsuleBackground="{DynamicResource Brush.Surface.Subtle}"/>
+                            </StackPanel>
+                        </Grid>
+                    </local:CrispShadowBorder>
+                </Grid>
+            </Grid>
+        </local:CrispShadowBorder>
+    </Grid>
+</UserControl>

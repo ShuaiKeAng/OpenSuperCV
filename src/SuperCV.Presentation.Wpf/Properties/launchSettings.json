@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SuperCV": {
+      "commandName": "Project",
+      "workingDirectory": "$(ProjectDir)"
+    }
+  }
+}

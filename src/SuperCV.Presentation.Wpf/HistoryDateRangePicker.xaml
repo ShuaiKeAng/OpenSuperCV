@@ -1,0 +1,435 @@
+<UserControl x:Class="SuperCV.HistoryDateRangePicker"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SuperCV"
+             x:Name="Root"
+             MinHeight="24"
+             Focusable="False"
+             SnapsToDevicePixels="True"
+             UseLayoutRounding="True">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="HistoryDateAccentBrush"
+                         Color="{DynamicResource Color.AiAccent.Start}"/>
+
+        <Style x:Key="HistoryDateFieldButtonStyle"
+               TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="5,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="FieldSurface"
+                                Margin="0"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="12"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="FieldSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Surface.Raised}"/>
+                            </Trigger>
+                           
+                            <Trigger Property="Tag" Value="True">
+                                <Setter TargetName="FieldSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Surface.Raised}"/>
+                                
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="FieldSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.PressedSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="FieldSurface" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryCalendarIconButtonStyle"
+               TargetType="Button">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="Height" Value="24"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="IconSurface"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.HoverSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="IconSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.FocusSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="IconSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.PressedSubtle}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryCalendarTextButtonStyle"
+               TargetType="Button">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="MinWidth" Value="54"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="TextButtonSurface"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TextButtonSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.HoverSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="TextButtonSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.FocusSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="TextButtonSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.PressedSubtle}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="TextButtonSurface" Property="Opacity" Value="0.35"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistoryCalendarDayButtonStyle"
+               TargetType="Button">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Margin" Value="3"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Primary}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="DaySurface"
+                                CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding IsInRange}" Value="True">
+                                <Setter TargetName="DaySurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Selection.Range}"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsCurrentMonth}" Value="False">
+                                <Setter Property="Opacity" Value="0.38"/>
+                            </DataTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Setter TargetName="DaySurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.Hover}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="DaySurface"
+                                        Property="BorderBrush"
+                                        Value="{StaticResource HistoryDateAccentBrush}"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding IsToday}" Value="True">
+                                <Setter Property="FontWeight" Value="Bold"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                <Setter Property="Opacity" Value="1"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Brush.Text.OnAccent}"/>
+                                <Setter TargetName="DaySurface"
+                                        Property="Background"
+                                        Value="{StaticResource HistoryDateAccentBrush}"/>
+                            </DataTrigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="DaySurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.PressedSubtle}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid x:Name="PickerSurface">
+        <local:DpiRoundedBorder CornerRadius="12"
+                                Height="24"
+                Background="{DynamicResource Brush.Control.FillSubtle}"
+                                BorderBrush="{DynamicResource Brush.Border.Soft}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+
+
+                <Button x:Name="StartDateButton"
+                        Grid.Column="0"
+                        Style="{StaticResource HistoryDateFieldButtonStyle}"
+                        Tag="{Binding IsStartPickerOpen, ElementName=Root}"
+                        Click="StartDateButton_Click"
+                        ToolTip="选择历史记录的起始日期"
+                        AutomationProperties.Name="历史记录起始日期">
+                    <TextBlock Text="{Binding StartDateText, ElementName=Root}"
+                               FontSize="11"
+                               TextTrimming="CharacterEllipsis"/>
+                </Button>
+
+                <Viewbox Grid.Column="1"
+                         Width="10"
+                         Height="10"
+                         HorizontalAlignment="Center"
+                         VerticalAlignment="Center"
+                         Opacity="1"
+                         IsHitTestVisible="False">
+                    <StaticResource ResourceKey="HistoryDateRangeArrowIcon"/>
+                </Viewbox>
+
+                <Button x:Name="EndDateButton"
+                        Grid.Column="2"
+                        Style="{StaticResource HistoryDateFieldButtonStyle}"
+                        Tag="{Binding IsEndPickerOpen, ElementName=Root}"
+                        Click="EndDateButton_Click"
+                        ToolTip="选择历史记录的截止日期"
+                        AutomationProperties.Name="历史记录截止日期">
+                    <TextBlock Text="{Binding EndDateText, ElementName=Root}"
+                               FontSize="11"
+                               TextTrimming="CharacterEllipsis"/>
+                </Button>
+            </Grid>
+        </local:DpiRoundedBorder>
+
+        <Popup x:Name="CalendarPopup"
+               PlacementTarget="{Binding ElementName=PickerSurface}"
+Placement="RelativePoint"
+HorizontalOffset="0"
+VerticalOffset="40"
+               AllowsTransparency="True"
+               StaysOpen="False"
+               PopupAnimation="Fade"
+               Opened="CalendarPopup_Opened"
+               Closed="CalendarPopup_Closed">
+            <Grid Margin="10">
+                <local:CrispShadowBorder Width="260"
+                                         Padding="5"
+                                         CornerRadius="10"
+                                         Background="{DynamicResource Brush.Surface.Raised}"
+                                         BorderThickness="0">
+                    <local:CrispShadowBorder.ShadowEffect>
+                        <DropShadowEffect BlurRadius="15"
+                                          ShadowDepth="0"
+                                          Color="{DynamicResource Color.Shadow.Surface}"
+                                          Opacity="0.4"/>
+                    </local:CrispShadowBorder.ShadowEffect>
+
+                    <Grid PreviewKeyDown="CalendarPopup_PreviewKeyDown">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="24"/>
+
+                            <RowDefinition Height="30"/>
+                            <RowDefinition Height="22"/>
+                            <RowDefinition Height="162"/>
+
+                            <RowDefinition Height="24"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="4,4,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Viewbox Width="12"
+                                     Height="12"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center">
+                                <StaticResource ResourceKey="HistoryDateRangeCalendarIcon"/>
+                            </Viewbox>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding ActiveTitle, ElementName=Root}"
+                                       FontSize="12"
+                                       Padding="8,0"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource Brush.Text.Primary}"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+
+
+                        <Grid Grid.Row="1" Margin="5,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="32"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"
+                                    Style="{StaticResource HistoryCalendarIconButtonStyle}"
+                                    Click="PreviousMonthButton_Click"
+                                    ToolTip="上个月"
+                                    AutomationProperties.Name="上个月"
+>
+                                <Viewbox Width="11"
+                                         Height="11"
+                                         RenderTransformOrigin="0.4,0"
+                                         >
+                                    <Viewbox.RenderTransform>
+                                        <ScaleTransform ScaleX="-1"/>
+                                    </Viewbox.RenderTransform>
+                                    <StaticResource ResourceKey="HistoryDateRangeArrowIcon"/>
+                                </Viewbox>
+                            </Button>
+                            <TextBlock Grid.Column="1"
+                                       Text="{Binding DisplayMonthText, ElementName=Root}"
+                                       FontSize="12"
+                                       FontWeight="SemiBold"
+                                       Foreground="{DynamicResource Brush.Text.Primary}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="2"
+                                    Style="{StaticResource HistoryCalendarIconButtonStyle}"
+                                    Click="NextMonthButton_Click"
+                                    ToolTip="下个月"
+                                    AutomationProperties.Name="下个月">
+                                <Viewbox Width="11" Height="11">
+                                    <StaticResource ResourceKey="HistoryDateRangeArrowIcon"/>
+                                </Viewbox>
+                            </Button>
+                        </Grid>
+
+                        <UniformGrid Grid.Row="2" Columns="7">
+                            <TextBlock Text="一"/>
+                            <TextBlock Text="二"/>
+                            <TextBlock Text="三"/>
+                            <TextBlock Text="四"/>
+                            <TextBlock Text="五"/>
+                            <TextBlock Text="六"/>
+                            <TextBlock Text="日"/>
+                            <UniformGrid.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="10"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Muted}"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </UniformGrid.Resources>
+                        </UniformGrid>
+
+                        <ItemsControl Grid.Row="3"
+                                      ItemsSource="{Binding CalendarDays, ElementName=Root}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="6" Columns="7"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Content="{Binding DayText}"
+                                            Tag="{Binding}"
+                                            Style="{StaticResource HistoryCalendarDayButtonStyle}"
+                                            Click="CalendarDayButton_Click"
+                                            AutomationProperties.Name="{Binding AccessibleDateText}"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+
+                        <Grid Grid.Row="4" Margin="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="点击日期即可应用"
+                                       Margin="8,0,0,0"
+                                       FontSize="10"
+                                       Foreground="{DynamicResource Brush.Text.Muted}"
+                                       VerticalAlignment="Center"/>
+                            <Button Grid.Column="1"
+                                    Content="清除"
+                                    IsEnabled="{Binding CanClearActiveDate, ElementName=Root}"
+                                    Style="{StaticResource HistoryCalendarTextButtonStyle}"
+                                    Click="ClearDateButton_Click"/>
+                            <Button Grid.Column="2"
+                                    Content="今天"
+                                    Style="{StaticResource HistoryCalendarTextButtonStyle}"
+                                    Click="TodayButton_Click"/>
+                        </Grid>
+                    </Grid>
+                </local:CrispShadowBorder>
+            </Grid>
+        </Popup>
+    </Grid>
+</UserControl>

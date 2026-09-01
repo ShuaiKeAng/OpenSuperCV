@@ -1,0 +1,825 @@
+<Window x:Class="SuperCV.AIChatbot"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SuperCV"
+        mc:Ignorable="d"
+        Title="AI对话" 
+        Width="580" Height="720"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+
+
+    <Window.Resources>
+
+        <!-- AI 思考过程：使用应用现有主题画刷替代系统默认 Expander 外观。 -->
+        <Style x:Key="ReasoningExpanderStyle"
+               TargetType="{x:Type Expander}"
+               BasedOn="{StaticResource PointerOnlyControlStyle}">
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Text.Muted}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Expander}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <ToggleButton x:Name="HeaderToggle"
+                                          Grid.Row="0"
+                                          IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                          Cursor="Hand"
+                                          Focusable="False"
+                                          KeyboardNavigation.IsTabStop="False"
+                                          AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                        <Border x:Name="HeaderSurface"
+                                                MinHeight="28"
+                                                Padding="4"
+                                                CornerRadius="8"
+                                                Background="Transparent"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Border x:Name="ArrowSurface"
+                                                        Width="20"
+                                                        Height="20"
+                                                        CornerRadius="4"
+                                                        Background="{DynamicResource Brush.Surface.Raised}"
+                                                        BorderBrush="{DynamicResource Brush.Border.Control}"
+                                                        BorderThickness="1">
+                                                    <Path x:Name="ArrowPath"
+                                                          Width="9"
+                                                          Height="9"
+                                                          Data="M1,1 L4.5,4.5 L8,1"
+                                                          Stretch="Fill"
+                                                          Stroke="{DynamicResource Brush.Icon.Primary}"
+                                                          StrokeThickness="1.5"
+                                                          StrokeStartLineCap="Round"
+                                                          StrokeEndLineCap="Round"
+                                                          StrokeLineJoin="Round"
+                                                          RenderTransformOrigin="0.5,0.5">
+                                                        <Path.RenderTransform>
+                                                            <RotateTransform Angle="0"/>
+                                                        </Path.RenderTransform>
+                                                    </Path>
+                                                </Border>
+
+                                                <ContentPresenter Grid.Column="1"
+                                                                  Margin="7,0,5,0"
+                                                                  VerticalAlignment="Center"
+                                                                  ContentSource="Content"
+                                                                  RecognizesAccessKey="True"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsChecked" Value="True">
+                                                <Setter TargetName="ArrowPath" Property="RenderTransform">
+                                                    <Setter.Value>
+                                                        <RotateTransform Angle="180"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                                <Setter TargetName="HeaderSurface" Property="Background" Value="{DynamicResource Brush.Surface.Raised}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="HeaderSurface" Property="Background" Value="{DynamicResource Brush.Surface.Raised}"/>
+                                                <Setter TargetName="ArrowSurface" Property="Background" Value="{DynamicResource Brush.Control.HoverSubtle}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="HeaderSurface" Property="Background" Value="{DynamicResource Brush.Control.Pressed}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="HeaderSurface" Property="Opacity" Value="0.45"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                                <ContentPresenter ContentSource="Header"/>
+                            </ToggleButton>
+
+                            <ContentPresenter x:Name="ExpandSite"
+                                              Grid.Row="1"
+                                              Visibility="Collapsed"
+                                              Focusable="False"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsExpanded" Value="True">
+                                <Setter TargetName="ExpandSite" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- AI 消息模板 -->
+        <!-- AI 消息模板 -->
+        <DataTemplate x:Key="AIMessageTemplate">
+            <Border x:Name="AIMessageContainer"
+                    CornerRadius="15"
+                    Background="{DynamicResource Brush.Control.FillSubtle}"
+                    Margin="0,5,0,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition x:Name="MessageFooterRow" Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Expander x:Name="ReasoningExpander"
+                              Grid.Row="0"
+                              Margin="8"
+                              Style="{StaticResource ReasoningExpanderStyle}"
+                              IsExpanded="{Binding IsReasoningExpanded, Mode=TwoWay}"
+                              AutomationProperties.Name="思考过程">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Path Data="M2,8 C2,4.7 4.7,2 8,2 C11.3,2 14,4.7 14,8 C14,10.2 12.8,12.1 11,13 L11,15 L5,15 L5,13 C3.2,12.1 2,10.2 2,8 Z M5,17 L11,17"
+                                      Width="14"
+                                      Height="16"
+                                      Margin="0,0,6,0"
+                                      Stretch="Uniform"
+                                      Stroke="{DynamicResource Brush.Icon.Muted}"
+                                      StrokeThickness="1.2"
+                                      StrokeLineJoin="Round"/>
+                                <TextBlock Text="{Binding ReasoningTitle}"
+                                           FontSize="11"
+                                           FontWeight="DemiBold"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Expander.Header>
+                        <Border Margin="0,6,0,2"
+                                Padding="3,1,1,1"
+                                CornerRadius="8"
+                                Background="{DynamicResource Brush.Surface.Raised}"
+                                BorderBrush="{DynamicResource Brush.Border.Control}"
+                                BorderThickness="1">
+                            <TextBox Text="{Binding ReasoningContent}"
+                                     MaxHeight="220"
+                                     IsReadOnly="True"
+                                     TextWrapping="Wrap"
+                                     VerticalScrollBarVisibility="Auto"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     FontSize="11"
+                                     Foreground="{DynamicResource Brush.Text.Muted}"
+                                     SelectionBrush="{DynamicResource Brush.Text.Selection}"/>
+                        </Border>
+                    </Expander>
+
+
+                    <TextBox x:Name="StreamingContent"
+                             Grid.Row="1"
+                             Margin="8,0,8,8"
+                             Text="{Binding Content}"
+                             TextWrapping="Wrap"
+                             IsReadOnly="True"
+                             BorderThickness="0"
+                             Background="Transparent"
+                             Foreground="{DynamicResource Brush.Text.Primary}"
+                             SelectionBrush="{DynamicResource Brush.Text.Selection}"
+                             Visibility="Collapsed"/>
+
+                    <local:SelectableFlowDocumentViewer x:Name="FormattedContentViewer"
+                                                        Grid.Row="1"
+                                                        Margin="8,0,8,0"
+                                                        Padding="0"
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        FontSize="12"
+                                                        Foreground="{DynamicResource Brush.Text.Primary}"
+                                                        SelectionBrush="{DynamicResource Brush.Text.Selection}"
+                                                        DocumentSource="{Binding FormattedContent}"
+                                                        PreviewMouseWheel="ReplyViewer_PreviewMouseWheel">
+                        <local:SelectableFlowDocumentViewer.Resources>
+                            <Style TargetType="ScrollViewer">
+                                <EventSetter Event="Loaded" Handler="MdXamlCodeBlock_Loaded" />
+                            </Style>
+                        </local:SelectableFlowDocumentViewer.Resources>
+                    </local:SelectableFlowDocumentViewer>
+                    
+
+
+
+                    <!-- 操作按钮放在消息内部右下角等 -->
+                    <StackPanel x:Name="MessageActions"
+                                Grid.Row="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Bottom"
+                                Margin="0,5">
+
+
+
+
+                        <Button Style="{StaticResource smallRoundButtonStyle}"  Height="20" Background="Transparent"
+                       Click="CopyMessage_Click" Tag="{Binding}" Margin="5,0,0,0"
+                                ToolTip="{Binding CopyActionText}"
+                                AutomationProperties.Name="{Binding CopyActionText}">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="3*"/>
+
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Margin="5,0" Grid.Column="0" Width="12" Height="12" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StaticResource ResourceKey="Copy" />
+                                    </Viewbox>
+                                    <TextBlock  Grid.Column="1" Text="{Binding CopyActionText}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Text.Muted}" Margin="0,0,5,0"/>
+
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource smallRoundButtonStyle}"
+                                Height="20"
+                                Background="Transparent"
+                                Tag="{Binding}"
+                                Margin="5,0,0,0"
+                                Click="EditQuestion_Click"
+                                ToolTip="{Binding EditQuestionToolTip}"
+                                AutomationProperties.Name="{Binding EditQuestionActionText}">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Margin="5,0"
+                                             Grid.Column="0"
+                                             Width="12"
+                                             Height="12"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center">
+                                        <StaticResource ResourceKey="EditMessageIcon"/>
+                                    </Viewbox>
+                                    <TextBlock Grid.Column="1"
+                                               Text="{Binding EditQuestionActionText}"
+                                               FontSize="12"
+                                               VerticalAlignment="Center"
+                                               Foreground="{DynamicResource Brush.Text.Muted}"
+                                               Margin="0,0,5,0"/>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <Button Style="{StaticResource smallRoundButtonStyle}"  Height="20" Background="Transparent"
+Tag="{Binding}" Margin="5,0,0,0" Click="ReGenerate_Click"
+                                ToolTip="{Binding RegenerateActionText}"
+                                AutomationProperties.Name="{Binding RegenerateActionText}">
+                            <Button.Content>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="3*"/>
+
+                                    </Grid.ColumnDefinitions>
+                                    <Viewbox Margin="5,0" Grid.Column="0" Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <StaticResource ResourceKey="ReFlesh" />
+                                    </Viewbox>
+                                    <TextBlock  Grid.Column="1" Text="{Binding RegenerateActionText}" FontSize="12" VerticalAlignment="Center" Foreground="{DynamicResource Brush.Text.Muted}" Margin="0,0,5,0"/>
+
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="MessageTimestamp"
+                               Grid.Row="2"
+                               HorizontalAlignment="Right"
+                               Text="{Binding Timestamp}"
+                               FontSize="10"
+                               Foreground="{DynamicResource Brush.Text.Muted}"
+                               Margin="10,5"
+                               VerticalAlignment="Bottom"/>
+
+                </Grid>
+            </Border>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding ReasoningContent}" Value="">
+                    <Setter TargetName="ReasoningExpander" Property="Visibility" Value="Collapsed"/>
+                    <!-- When the optional reasoning row is absent, retain the same top inset
+                         that its outer margin would otherwise provide. -->
+                    <Setter TargetName="StreamingContent" Property="Margin" Value="8,8,8,8"/>
+                    <Setter TargetName="FormattedContentViewer" Property="Margin" Value="8,8,8,0"/>
+                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding Content}" Value=""/>
+                        <Condition Binding="{Binding ReasoningContent}" Value=""/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter TargetName="AIMessageContainer" Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger>
+                <DataTrigger Binding="{Binding IsStreaming}" Value="True">
+                    <Setter TargetName="StreamingContent" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="FormattedContentViewer" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="MessageActions" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="MessageTimestamp" Property="Visibility" Value="Collapsed"/>
+                    <Setter TargetName="MessageFooterRow" Property="Height" Value="0"/>
+                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsStreaming}" Value="True"/>
+                        <Condition Binding="{Binding Content}" Value=""/>
+                    </MultiDataTrigger.Conditions>
+                    <!-- 思考/工具调用阶段还没有最终文本时，不为一个空 TextBox 预留一行高度。 -->
+                    <Setter TargetName="StreamingContent" Property="Visibility" Value="Collapsed"/>
+                </MultiDataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate> 
+
+        <!-- 用户消息模板 -->
+        <DataTemplate x:Key="UserMessageTemplate">
+            <Border CornerRadius="15,5,15,15" 
+            Background="{DynamicResource Brush.Surface.Window}"
+            Margin="50,5,0,5"
+            HorizontalAlignment="Right">
+                <!-- 关键：左对齐让Border收缩 -->
+                <Grid>
+                    <TextBox Text="{Binding Content}" 
+                     FontSize="12" 
+                     Foreground="{DynamicResource Brush.Text.Primary}"
+                     TextWrapping="Wrap" 
+                     Margin="10,8"
+                     HorizontalAlignment="Left" 
+                        Background="Transparent" 
+                     BorderThickness="0"
+                     SelectionBrush="{DynamicResource Brush.Text.Selection}"
+                     IsReadOnly="True" 
+                     Cursor="IBeam"
+                     HorizontalContentAlignment="Left"
+                     VerticalContentAlignment="Center"/>
+                </Grid>
+            </Border>
+        </DataTemplate>
+
+        <local:ChatMessageTemplateSelector x:Key="MessageTemplateSelector"
+                                       UserMessageTemplate="{StaticResource UserMessageTemplate}"
+                                       AIMessageTemplate="{StaticResource AIMessageTemplate}"/>
+            <!-- 原有的模板资源 -->
+
+    </Window.Resources>
+
+
+    <local:CrispShadowBorder x:Name="RootBorder" CornerRadius="20"
+            Background="{DynamicResource Brush.Surface.Window}"
+            Margin="20">
+        <local:CrispShadowBorder.ShadowEffect>
+            <DropShadowEffect BlurRadius="30" 
+                              ShadowDepth="0" 
+                              Color="{DynamicResource Color.Shadow.Surface}"
+                              Opacity="0.5"/>
+        </local:CrispShadowBorder.ShadowEffect>
+
+        <Grid Margin="10"
+              RenderOptions.ClearTypeHint="Enabled">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+
+            </Grid.RowDefinitions>
+            <Grid Background="#00000000" MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                <local:CrispWindowHeaderLogo/>
+                <Label Content="AI 对话助手"
+                       Style="{StaticResource WindowHeaderTitleStyle}"/>
+                <Button Style="{StaticResource WindowHeaderCloseButtonStyle}"
+                        Click="Minimize_Click"
+                        ToolTip="最小化"
+                        HorizontalAlignment="Right"
+                        AutomationProperties.Name="最小化 AI 对话助手"
+                        Margin="4,4,45,4">
+                    <Path Data="M0,5 L10,5"
+                          Width="16"
+                          Height="16"
+                          Stroke="{DynamicResource Brush.Icon.Primary}"
+                          StrokeThickness="2"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          Stretch="Fill"
+                          IsHitTestVisible="False"/>
+                </Button>
+                <Button Style="{StaticResource WindowHeaderCloseButtonStyle}"
+                        Click="Close_Click"
+                        ToolTip="关闭"
+                        HorizontalAlignment="Right"
+                        AutomationProperties.Name="关闭 AI 对话助手"
+                        Margin="4">
+                    <Path Data="M0,0 L10,10 M10,0 L0,10"
+                          Width="16"
+                          Height="16"
+                          Stroke="{DynamicResource Brush.Icon.Primary}"
+                          StrokeThickness="2"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          Stretch="Fill"
+                          IsHitTestVisible="False"/>
+                </Button>
+            </Grid>
+
+            <Border Grid.Row="1" Visibility="{Binding SourcePanelVisibility}"
+        CornerRadius="10" 
+        Background="{DynamicResource Brush.Surface.Raised}"
+        Margin="0,5,0,0"
+        Padding="8"
+        BorderBrush="{DynamicResource Brush.Border.Control}"
+        BorderThickness="1">
+
+                <Expander IsExpanded="True">
+                    <!-- 完全自定义模板，移除所有默认视觉元素 -->
+                    <Expander.Template>
+                        <ControlTemplate TargetType="Expander">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition x:Name="ContentRow" Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- 使用ToggleButton作为标题容器，绑定展开状态，并自定义外观 -->
+                                <ToggleButton x:Name="HeaderToggle"
+                                  Grid.Row="0"
+                                  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource AncestorType=Expander}}"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  Padding="0"
+                                  Cursor="Hand">
+
+                                    <!-- 完全重写ToggleButton的视觉树，不包含任何默认箭头 -->
+                                    <ToggleButton.Template>
+                                        <ControlTemplate TargetType="ToggleButton">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- 标题文本 -->
+                                                <TextBlock Grid.Column="0"
+                                               Text="{TemplateBinding Content}"
+                                               FontSize="14" 
+                                               Foreground="{DynamicResource Brush.Text.Primary}"
+                                               FontWeight="DemiBold"
+                                               MaxHeight="20" 
+                                               TextTrimming="CharacterEllipsis"
+                                               VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Column="1"
+                                                           Text="{Binding SourceTokenEstimate}"
+                                                           Visibility="{Binding SourceTokenEstimateVisibility}"
+                                                           Margin="8,0,8,0"
+                                                           VerticalAlignment="Center"
+                                                           FontSize="12"
+                                                           FontWeight="Normal"
+                                                           Foreground="{DynamicResource Brush.Text.Muted}"
+                                                           Opacity="0.58"/>
+
+                                                <!-- 右侧箭头（上下箭头） -->
+                                                <Path x:Name="ArrowPath"
+                                                Grid.Column="2"
+                                                HorizontalAlignment="Right"
+                                          Data="M4,4 L8,10 L12,4"
+                                          Stroke="{DynamicResource Brush.Icon.Primary}"
+                                          StrokeThickness="1.5"
+                                          StrokeLineJoin="Round"
+                                          Fill="Transparent"
+                                          Width="16"
+                                          Height="16"
+                                          Stretch="None"
+                                          VerticalAlignment="Center"
+                                          Margin="0,0,5,0"
+                                          RenderTransformOrigin="0.5,0.5">
+                                                    <Path.RenderTransform>
+                                                        <RotateTransform Angle="0"/>
+                                                    </Path.RenderTransform>
+                                                </Path>
+                                            </Grid>
+
+                                            <!-- 触发器：根据IsChecked旋转箭头 -->
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsChecked" Value="True">
+                                                    <Setter TargetName="ArrowPath" Property="RenderTransform">
+                                                        <Setter.Value>
+                                                            <RotateTransform Angle="180"/>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </ToggleButton.Template>
+
+                                    <!-- 设置ToggleButton的内容为Expander的Header -->
+                                    <ToggleButton.Content>
+                                        <Binding RelativeSource="{RelativeSource AncestorType=Expander}" Path="Header"/>
+                                    </ToggleButton.Content>
+                                </ToggleButton>
+
+                                <!-- 内容区域 -->
+                                <Border x:Name="ContentBorder"
+                            Grid.Row="1"
+                            Padding="0"
+                            BorderThickness="0,0,0,0"
+                            BorderBrush="{DynamicResource Brush.Border.Control}"
+                            Visibility="Collapsed">
+                                    <ContentPresenter Content="{TemplateBinding Content}"/>
+                                </Border>
+                            </Grid>
+
+                            <!-- 控制内容区域的显示与隐藏 -->
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsExpanded" Value="True">
+                                    <Setter TargetName="ContentBorder" Property="Visibility" Value="Visible"/>
+                                    <Setter TargetName="ContentRow" Property="Height" Value="Auto"/>
+                                </Trigger>
+                                <Trigger Property="IsExpanded" Value="False">
+                                    <Setter TargetName="ContentBorder" Property="Visibility" Value="Collapsed"/>
+                                    <Setter TargetName="ContentRow" Property="Height" Value="0"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Expander.Template>
+
+                    <!-- 设置Header绑定到ContentTitle -->
+                    <Expander.Header>
+                        <Binding Path="ContentTitle"/>
+                    </Expander.Header>
+
+                    <!-- 内容区域：原来的TextBlock -->
+                    <TextBlock x:Name="ContentObjectText" 
+                   Text="{Binding ContentShow, Mode=OneWay}"
+                   FontSize="12" 
+                   Foreground="{DynamicResource Brush.Text.Muted}"
+                   TextWrapping="Wrap"
+                   Margin="0,5,0,0"
+                   MaxHeight="50"  
+                   TextTrimming="CharacterEllipsis"/>
+                </Expander>
+            </Border>
+
+            <!-- 对话历史列表区域 -->
+            <Border Grid.Row="2" 
+                    CornerRadius="10" 
+                    Background="{DynamicResource Brush.Surface.Raised}"
+                    Margin="0,10,0,72" BorderBrush="{DynamicResource Brush.Border.Control}"
+BorderThickness="1" Padding="2">
+                
+                
+
+                <ScrollViewer x:Name="Scroller" VerticalScrollBarVisibility="Auto"
+                              Padding="5,0,5,0" ScrollChanged="Scroller_ScrollChanged">
+                    <ScrollViewer.Resources>
+                        <!-- 直接在这里定义或引用滚动条样式 -->
+                        <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBar}"/>
+                    </ScrollViewer.Resources>
+                    <ItemsControl x:Name="MessagesList" 
+              ItemsSource="{Binding Messages}"
+              ItemTemplateSelector="{StaticResource MessageTemplateSelector}"
+              Background="Transparent" BorderThickness="0"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- 输入区域 -->
+
+            <Grid Grid.Row="2" VerticalAlignment="Bottom">
+                
+
+
+
+                <local:CrispShadowBorder
+                    CornerRadius="10" 
+                    Background="{DynamicResource Brush.Surface.Raised}"
+                    Margin="0"
+                    BorderBrush="{DynamicResource Brush.Border.Control}"
+                    BorderThickness="1">
+                    <local:CrispShadowBorder.ShadowEffect>
+                        <DropShadowEffect 
+BlurRadius="20"
+ShadowDepth="0"
+Color="{DynamicResource Color.Shadow.Content}"
+Opacity="0.3" />
+                    </local:CrispShadowBorder.ShadowEffect>
+                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="InputTextBox"
+                             Grid.Row="0"
+                             BorderThickness="0" 
+                             Background="Transparent" 
+                             Padding="10,5,20,0"
+                             FontSize="16"
+                             MinHeight="32"
+                             Foreground="{DynamicResource Brush.Text.Primary}"
+                             VerticalContentAlignment="Center"
+                             Text="{Binding InputText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             SelectionBrush="{DynamicResource Brush.Text.Selection}" CaretBrush="{DynamicResource Brush.Text.Caret}"
+                             AcceptsReturn="True"
+                             TextWrapping="Wrap"
+                             MaxHeight="180"
+                             KeyDown="InputTextBox_KeyDown"
+                             VerticalScrollBarVisibility="Hidden"/>
+
+
+                        <TextBlock Grid.Row="0" 
+                               IsHitTestVisible="False" 
+                               Text="输入消息..." 
+                               Padding="10,5,20,0"
+                               FontSize="16"  
+                               Foreground="{DynamicResource Brush.Text.Muted}"
+                               
+                               VerticalAlignment="Center">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Text, ElementName=InputTextBox}" Value="">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <Grid RenderOptions.ClearTypeHint="Enabled" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="1"
+                Width="140"
+                Height="24"
+                Margin="5,0,5,5"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource RoundedComboBoxStyle2}"
+                Background="{DynamicResource Brush.Surface.Raised}"
+                BorderBrush="{DynamicResource Brush.Border.Control}"
+                BorderThickness="1"
+                 ItemsSource="{Binding ReasoningDepthOptions}"
+                 SelectedItem="{Binding SelectedReasoningDepth, Mode=TwoWay}"
+                 DisplayMemberPath="Label"
+                 ToolTip="{Binding SelectedReasoningDepth.Description}"
+                 AutomationProperties.Name="思考深度"/>
+                        <ComboBox Grid.Column="2"
+                                  Width="140"
+                                  Height="24"
+                                  Margin="5,0,5,5"
+                                  VerticalAlignment="Bottom"
+                                  Style="{StaticResource RoundedComboBoxStyle2}"
+                                  Background="{DynamicResource Brush.Surface.Raised}"
+                                  BorderBrush="{DynamicResource Brush.Border.Control}"
+                                  BorderThickness="1"
+                                  ItemsSource="{Binding AgentAccessOptions}"
+                                  SelectedItem="{Binding SelectedAgentAccess, Mode=TwoWay}"
+                                  DisplayMemberPath="Label"
+                                  ToolTip="{Binding SelectedAgentAccess.Description}"
+                                  AutomationProperties.Name="Agent 模式">
+                        </ComboBox>
+                        <Button Grid.Column="3"
+        Width="30"
+        Height="30"
+        Margin="5,-6,5,5"
+        VerticalAlignment="Bottom"
+        HorizontalAlignment="Right"
+        Background="#5686fe"
+        BorderThickness="0"
+        Foreground="White"
+        Click="SendMessage_Click"  
+        Cursor="Hand"
+        IsEnabled="True"
+        AutomationProperties.Name="发送消息或终止回答">
+
+                            <Button.ToolTip>
+                                <TextBlock Text="发送消息（Enter）">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                                    <Setter Property="Text" Value="终止回答"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Button.ToolTip>
+
+                            <!-- 自定义模板实现圆形外观和交互效果 -->
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="border"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="20">
+
+                                        <VisualStateManager.VisualStateGroups>
+                                            <VisualStateGroup x:Name="CommonStates">
+                                                <!-- 普通状态 -->
+                                                <VisualState x:Name="Normal"/>
+
+                                                <!-- 鼠标悬停状态 - 颜色加深 -->
+                                                <VisualState x:Name="MouseOver">
+                                                    <Storyboard>
+                                                        <ColorAnimation 
+                                    Storyboard.TargetName="border" 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                    To="#4d79e5" 
+                                    Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <!-- 鼠标按下状态 - 更深颜色 -->
+                                                <VisualState x:Name="Pressed">
+                                                    <Storyboard>
+                                                        <ColorAnimation 
+                                    Storyboard.TargetName="border" 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                    To="#456bcb" 
+                                    Duration="0:0:0.1"/>
+                                                    </Storyboard>
+                                                </VisualState>
+
+                                                <!-- 禁用状态 -->
+                                                <VisualState x:Name="Disabled">
+                                                    <Storyboard>
+                                                        <ColorAnimation 
+                                    Storyboard.TargetName="border" 
+                                    Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                    To="#89aafe" 
+                                    Duration="0"/>
+                                                    </Storyboard>
+                                                </VisualState>
+                                            </VisualStateGroup>
+                                        </VisualStateManager.VisualStateGroups>
+
+                                        <!-- 半径为宽度/40的一半，即20 -->
+                                        <ContentPresenter HorizontalAlignment="Center"
+                                  VerticalAlignment="Center"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+
+                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <!-- 正常状态使用发送箭头；流式回答期间切换为矩形终止图标。 -->
+                                <Viewbox Width="15"
+                                         Height="15"
+                                         UseLayoutRounding="False"
+                                         SnapsToDevicePixels="False">
+                                    <Viewbox.Style>
+                                        <Style TargetType="Viewbox">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Viewbox.Style>
+                                    <StaticResource ResourceKey="ArrowUp" />
+                                </Viewbox>
+                                <Rectangle Width="11"
+                                           Height="11"
+                                           RadiusX="1"
+                                           RadiusY="1"
+                                           Fill="White">
+                                    <Rectangle.Style>
+                                        <Style TargetType="Rectangle">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Rectangle.Style>
+                                </Rectangle>
+                            </Grid>
+
+                        </Button>
+                        
+                    </Grid>
+                    </Grid>
+                </local:CrispShadowBorder>
+                
+                </Grid>
+
+        </Grid>
+    </local:CrispShadowBorder>
+</Window>

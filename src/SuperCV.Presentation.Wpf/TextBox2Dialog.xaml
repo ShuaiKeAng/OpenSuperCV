@@ -1,0 +1,199 @@
+<Window x:Class="SuperCV.TextBox2Dialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SuperCV"
+        mc:Ignorable="d"
+        Title="Dialog" Width="380" Height="255"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed">
+    <Window.Resources>
+        <Style x:Key="PromptDocumentButtonStyle"
+               TargetType="Button"
+               BasedOn="{StaticResource PointerOnlyControlStyle}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush.Icon.Primary}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Focusable" Value="True"/>
+            <Setter Property="KeyboardNavigation.IsTabStop" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="OpenDocumentSurface"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="5"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="OpenDocumentSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.Hover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="OpenDocumentSurface"
+                                        Property="Background"
+                                        Value="{DynamicResource Brush.Control.Pressed}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="OpenDocumentSurface"
+                                        Property="BorderBrush"
+                                        Value="{DynamicResource Brush.Border.Focus}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="OpenDocumentSurface"
+                                        Property="Opacity"
+                                        Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <local:CrispShadowBorder CornerRadius="20"
+    Background="{DynamicResource Brush.Surface.Window}"
+    Margin="20" >
+        <local:CrispShadowBorder.ShadowEffect>
+            <DropShadowEffect BlurRadius="30" 
+                      ShadowDepth="0" 
+                      Color="{DynamicResource Color.Shadow.Surface}"
+                      Opacity="0.5"/>
+
+        </local:CrispShadowBorder.ShadowEffect>
+        <Grid Margin="10"
+              RenderOptions.ClearTypeHint="Enabled">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+
+                
+            </Grid.RowDefinitions>
+            <Grid Background="#00000000" MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                <local:CrispWindowHeaderLogo/>
+                <Label Content="{Binding TitleText}"
+                       Style="{StaticResource WindowHeaderTitleStyle}"/>
+            </Grid>
+            <local:CrispShadowBorder Grid.Row="1" Margin="0,5,0,5" CornerRadius="10" Background="{DynamicResource Brush.Surface.Raised}" BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1">
+                <local:CrispShadowBorder.ShadowEffect>
+                    <DropShadowEffect BlurRadius="12" 
+                                  ShadowDepth="0" 
+                                  Color="{DynamicResource Color.Shadow.Surface}"
+                                  Opacity="{Binding Shadow1}"
+                                  />
+                </local:CrispShadowBorder.ShadowEffect>
+
+                <Grid RenderOptions.ClearTypeHint="Enabled">
+                    <TextBox x:Name="MyTextBox"
+                         BorderThickness="0" 
+                         Background="Transparent" 
+                         Padding="8,8"
+                         FontSize="16"
+                         Foreground="{DynamicResource Brush.Text.Primary}"
+                         VerticalContentAlignment="Center"
+                         Text="{Binding LabelName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                         SelectionBrush="{DynamicResource Brush.Text.Selection}" CaretBrush="{DynamicResource Brush.Text.Caret}"
+                         ToolTip="{Binding Tip1}" TextChanged="MyTextBox_TextChanged"/>
+                    <TextBlock IsHitTestVisible="False" Text="{Binding Tip1}"   Padding="10,8"
+                         FontSize="16"  
+                         Foreground="{DynamicResource Brush.Text.Muted}" VerticalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=MyTextBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                </Grid>
+            </local:CrispShadowBorder>
+            <local:CrispShadowBorder Grid.Row="2" Margin="0,5,0,5" CornerRadius="10" Background="{DynamicResource Brush.Surface.Raised}" BorderBrush="{DynamicResource Brush.Border.Control}" BorderThickness="1">
+                <local:CrispShadowBorder.ShadowEffect>
+                    <DropShadowEffect BlurRadius="12" 
+                  ShadowDepth="0" 
+                  Color="{DynamicResource Color.Shadow.Surface}"
+                  Opacity="{Binding Shadow2}"
+                  />
+                </local:CrispShadowBorder.ShadowEffect>
+                <Grid RenderOptions.ClearTypeHint="Enabled">
+                    <TextBox x:Name="MyTextBox2"
+                        BorderThickness="0" 
+                        Background="Transparent" 
+                        Padding="8,8"
+                        FontSize="16"
+                             AcceptsReturn="True"
+                        Foreground="{DynamicResource Brush.Text.Primary}"
+                        VerticalContentAlignment="Center"
+                        Text="{Binding Prompt,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                        SelectionBrush="{DynamicResource Brush.Text.Selection}" CaretBrush="{DynamicResource Brush.Text.Caret}"
+                             ToolTip="{Binding Tip2}" TextChanged="MyTextBox2_TextChanged"/>
+                    <TextBlock IsHitTestVisible="False" Text="{Binding Tip2}"   Padding="10,8"
+                        FontSize="16"
+                        Foreground="{DynamicResource Brush.Text.Muted}" VerticalAlignment="Center"
+                        >       
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Text, ElementName=MyTextBox2}" Value="">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Button x:Name="OpenPromptDocumentButton"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,5,0"
+                            Visibility="Collapsed"
+                            Style="{StaticResource PromptDocumentButtonStyle}"
+                            ToolTip="使用记事本打开指令文件"
+                            AutomationProperties.Name="使用记事本打开指令文件"
+                            Click="OpenPromptDocument_Click">
+                        <Viewbox Width="18" Height="18">
+                            <ContentControl Content="{StaticResource ExportDocumentIcon}"/>
+                        </Viewbox>
+                    </Button>
+                </Grid>
+            </local:CrispShadowBorder>
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                        <Grid>
+
+                </Grid>
+                <Button Content="确定" Margin="0,5,5,0" FontSize="18" FontWeight="DemiBold" Style="{StaticResource decideButtonStyle}"  Grid.Column="0"  Background="{DynamicResource Brush.Control.FillMuted}" Foreground="{DynamicResource Brush.Text.Primary}" Click="Button_OK_Click"/>
+                <Button Content="取消" Margin="5,5,0,0" FontSize="18" FontWeight="DemiBold" Style="{StaticResource decideButtonStyle}"  Grid.Column="1"  Background="{DynamicResource Brush.Control.FillMuted}" Foreground="{DynamicResource Brush.Text.Primary}" Click="Button_Click"/>
+            </Grid>
+        </Grid>
+
+        
+     </local:CrispShadowBorder>
+</Window>

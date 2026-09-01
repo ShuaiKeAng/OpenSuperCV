@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "default",
+  "displayName": { "zh-CN": "默认", "en-US": "Default" },
+  "light": {
+    "Color.Shadow.Surface": "#AA8D8D8D", "Color.Shadow.Content": "#AABBBBBB", "Color.Shadow.Icon": "#666666",
+    "Color.Toggle.TrackOff": "#E0E0E0", "Color.Toggle.TrackOn": "#55FF55", "Color.Toggle.TrackOnHover": "#B0F0B0", "Color.Toggle.Thumb": "#FFFFFF", "Color.Toggle.ThumbHover": "#F5F5F5",
+    "Color.AiAccent.Start": "#2563EB", "Color.AiAccent.Middle": "#5B5CE2", "Color.AiAccent.End": "#8B5CF6",
+    "Brush.Surface.Window": "#FFEEEEF2", "Brush.Surface.Subtle": "#FFF6F7F8", "Brush.Surface.Raised": "#FFFFFF", "Brush.Text.OnAccent": "#FFFFFF", "Brush.Icon.OnAccent": "#FFFFFF", "Brush.Border.Raised": "#FFFFFF",
+    "Brush.Control.FillSubtle": "#AAEEEEEE", "Brush.Control.FillMuted": "#E0E0E0", "Brush.Control.HoverSubtle": "#AAEEEEEE", "Brush.Control.Hover": "#DDDDDD", "Brush.Control.FocusSubtle": "#AAEEEEEE", "Brush.Control.PressedSubtle": "#AADDDDDD", "Brush.Control.Pressed": "#CCCCCC", "Brush.Control.Highlight": "#FFF9F9F9", "Brush.Selection.Range": "#AAEEEEEE",
+    "Brush.Border.Control": "#CCCCCC", "Brush.Border.Soft": "#DDDDDD", "Brush.Border.Muted": "#E0E0E0", "Brush.Border.Focus": "#AAAAAA", "Brush.Separator.Default": "#DDDDDD", "Brush.Separator.Strong": "#929292", "Brush.ScrollBar.Thumb": "#929292", "Brush.ScrollBar.ThumbSubtle": "#CCCCCC",
+    "Brush.Overlay.Action": "#55555555", "Brush.Overlay.ActionHover": "#55777777",
+    "Brush.Text.Primary": "#222222", "Brush.Text.Secondary": "#424242", "Brush.Text.Muted": "#6E6E6E", "Brush.Text.Selection": "#6E6E6E", "Brush.Text.Caret": "#222222", "Brush.Icon.Primary": "#363636", "Brush.Icon.Muted": "#6E6E6E", "Brush.Icon.Subtle": "#929292", "Brush.Border.Default": "#929292", "Brush.Border.Subtle": "#C6C6C6", "Brush.Ai.ProgressTrack": "#1F2563EB"
+  },
+  "dark": {
+    "Color.Shadow.Surface": "#30C0C0C0", "Color.Shadow.Content": "#44EEEEEE", "Color.Shadow.Icon": "#CCCCCC",
+    "Color.Toggle.TrackOff": "#1F1F1F", "Color.Toggle.TrackOn": "#55FF55", "Color.Toggle.TrackOnHover": "#B0F0B0", "Color.Toggle.Thumb": "#555555", "Color.Toggle.ThumbHover": "#666666",
+    "Color.AiAccent.Start": "#7DD3FC", "Color.AiAccent.Middle": "#60A5FA", "Color.AiAccent.End": "#A78BFA",
+    "Brush.Surface.Window": "#FF2E2E2E", "Brush.Surface.Subtle": "#FF333333", "Brush.Surface.Raised": "#363636", "Brush.Text.OnAccent": "#363636", "Brush.Icon.OnAccent": "#363636", "Brush.Border.Raised": "#363636",
+    "Brush.Control.FillSubtle": "#AA555555", "Brush.Control.FillMuted": "#404040", "Brush.Control.HoverSubtle": "#AA555555", "Brush.Control.Hover": "#555555", "Brush.Control.FocusSubtle": "#AA555555", "Brush.Control.PressedSubtle": "#AA666666", "Brush.Control.Pressed": "#666666", "Brush.Control.Highlight": "#FF555555", "Brush.Selection.Range": "#AA555555",
+    "Brush.Border.Control": "#666666", "Brush.Border.Soft": "#555555", "Brush.Border.Muted": "#404040", "Brush.Border.Focus": "#AA555555", "Brush.Separator.Default": "#555555", "Brush.Separator.Strong": "#BBBBBB", "Brush.ScrollBar.Thumb": "#BBBBBB", "Brush.ScrollBar.ThumbSubtle": "#666666",
+    "Brush.Overlay.Action": "#55CCCCCC", "Brush.Overlay.ActionHover": "#55AAAAAA",
+    "Brush.Text.Primary": "#DDDDDD", "Brush.Text.Secondary": "#BDBDBD", "Brush.Text.Muted": "#BBBBBB", "Brush.Text.Selection": "#BBBBBB", "Brush.Text.Caret": "#DDDDDD", "Brush.Icon.Primary": "#E5E5E5", "Brush.Icon.Muted": "#BBBBBB", "Brush.Icon.Subtle": "#BBBBBB", "Brush.Border.Default": "#BBBBBB", "Brush.Border.Subtle": "#777777", "Brush.Ai.ProgressTrack": "#33FFFFFF"
+  }
+}

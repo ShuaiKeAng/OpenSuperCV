@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\SuperCV.Domain\SuperCV.Domain.csproj" />
+    <ProjectReference Include="..\SuperCV.Application\SuperCV.Application.csproj" />
+    <ProjectReference Include="..\SuperCV.Infrastructure.Windows\SuperCV.Infrastructure.Windows.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <AssemblyName>SuperCV</AssemblyName>
+    <Version>0.9.1</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+    <RootNamespace>SuperCV</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <ApplicationIcon>Assets\SuperCV.Remastered.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MdXaml" Version="1.27.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Drawing" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\SuperCV.Remastered.png" />
+    <Resource Include="Assets\SuperCV.Remastered.Dark.png" />
+    <EmbeddedResource Include="Themes\*.json" />
+    <Content Include="..\..\docs\SuperCV_使用说明书.md"
+             Link="SuperCV_使用说明书.md"
+             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\docs\SuperCV_User_Guide.md"
+             Link="SuperCV_User_Guide.md"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

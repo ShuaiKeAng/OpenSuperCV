@@ -1,0 +1,110 @@
+<Window x:Class="SuperCV.AlertDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SuperCV"
+        mc:Ignorable="d"
+        Title="提示"
+        Width="380"
+        MinHeight="220"
+        SizeToContent="Height"
+        WindowStyle="None" 
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True"
+        
+        
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed">
+
+    <!-- 用一个 Grid 将阴影层和内容层分离开来，保持原来的 Margin="20" -->
+    <Grid Margin="20">
+
+        <!-- ================= 第1层：专门用于显示阴影的 Border ================= -->
+        <!-- 注意：这里必须要有 Background，否则阴影没有载体，但内部不放任何子元素 -->
+        <Border CornerRadius="20" Background="{DynamicResource Brush.Surface.Window}">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="30" 
+                                  ShadowDepth="0" 
+                                  Color="{DynamicResource Color.Shadow.Surface}"
+                                  Opacity="0.5"/>
+            </Border.Effect>
+        </Border>
+
+        <!-- ================= 第2层：专门用于显示内容的 Border ================= -->
+        <!-- 因为这一层没有 Effect，所以里面的文字渲染不会被转成位图，绝对清晰 -->
+        <Border CornerRadius="20" Background="{DynamicResource Brush.Surface.Window}">
+            <Grid Margin="10"
+                  RenderOptions.ClearTypeHint="Enabled">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="50"/>
+                </Grid.RowDefinitions>
+
+                <Grid Background="#00000000" MouseLeftButtonDown="Grid_MouseLeftButtonDown" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                    <local:CrispWindowHeaderLogo/>
+                    <Label Content="提示"
+                           Style="{StaticResource WindowHeaderTitleStyle}"/>
+                </Grid>
+
+                <ScrollViewer x:Name="TipScroller"
+                              Grid.Row="1"
+                              MaxHeight="{Binding MessageMaxHeight}"
+                              Margin="0,4"
+                              Padding="8,4"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto"
+                              PanningMode="VerticalOnly"
+                              VerticalContentAlignment="Center"
+                              Focusable="True"
+                              AutomationProperties.Name="提示内容">
+                    <TextBlock Text="{Binding Tip}"
+                               HorizontalAlignment="Stretch"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextAlignment="Left"
+                               FontSize="16"
+                               LineHeight="24"
+                               Foreground="{DynamicResource Brush.Text.Secondary}"/>
+                </ScrollViewer>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Content="{Binding PrimaryButtonText}"
+                            Margin="0,5,5,0"
+                            FontSize="18"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource decideButtonStyle}"
+                            Grid.Column="0"
+                            Background="{DynamicResource Brush.Control.FillMuted}"
+                            Foreground="{DynamicResource Brush.Text.Primary}"
+                            IsDefault="True"
+                            AutomationProperties.Name="{Binding PrimaryButtonText}"
+                            Click="Button_OK_Click"/>
+                    <Button Content="取消"
+                            Margin="5,5,0,0"
+                            FontSize="18"
+                            FontWeight="DemiBold"
+                            Style="{StaticResource decideButtonStyle}"
+                            Grid.Column="1"
+                            Background="{DynamicResource Brush.Control.FillMuted}"
+                            Foreground="{DynamicResource Brush.Text.Primary}"
+                            IsCancel="True"
+                            AutomationProperties.Name="取消"
+                            Click="Button_Click"/>
+                </Grid>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>

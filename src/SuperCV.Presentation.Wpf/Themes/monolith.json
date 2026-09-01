@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "monolith",
+  "displayName": { "zh-CN": "黑曜", "en-US": "Monolith" },
+  "light": {
+    "Color.Shadow.Surface": "#26000000", "Color.Shadow.Content": "#40000000", "Color.Shadow.Icon": "#1A1A1A",
+    "Color.Toggle.TrackOff": "#CFCFCF", "Color.Toggle.TrackOn": "#191919", "Color.Toggle.TrackOnHover": "#444444", "Color.Toggle.Thumb": "#FFFFFF", "Color.Toggle.ThumbHover": "#F2F2F2",
+    "Color.AiAccent.Start": "#111111", "Color.AiAccent.Middle": "#555555", "Color.AiAccent.End": "#A0A0A0",
+    "Brush.Surface.Window": "#FFF7F7F7", "Brush.Surface.Subtle": "#FFFFFFFF", "Brush.Surface.Raised": "#FFFFFFFF", "Brush.Text.OnAccent": "#FFFFFFFF", "Brush.Icon.OnAccent": "#FFFFFFFF", "Brush.Border.Raised": "#FFFFFFFF",
+    "Brush.Control.FillSubtle": "#FFF2F2F2", "Brush.Control.FillMuted": "#FFE4E4E4", "Brush.Control.HoverSubtle": "#FFE7E7E7", "Brush.Control.Hover": "#FFD5D5D5", "Brush.Control.FocusSubtle": "#FFE0E0E0", "Brush.Control.PressedSubtle": "#FFC8C8C8", "Brush.Control.Pressed": "#FFAEAEAE", "Brush.Control.Highlight": "#FFFFFFFF", "Brush.Selection.Range": "#FFE0E0E0",
+    "Brush.Border.Control": "#FF222222", "Brush.Border.Soft": "#FFB5B5B5", "Brush.Border.Muted": "#FFE0E0E0", "Brush.Border.Focus": "#FF000000", "Brush.Separator.Default": "#FFD0D0D0", "Brush.Separator.Strong": "#FF2C2C2C", "Brush.ScrollBar.Thumb": "#FF333333", "Brush.ScrollBar.ThumbSubtle": "#FF999999",
+    "Brush.Overlay.Action": "#33000000", "Brush.Overlay.ActionHover": "#55000000",
+    "Brush.Text.Primary": "#FF111111", "Brush.Text.Secondary": "#FF353535", "Brush.Text.Muted": "#FF737373", "Brush.Text.Selection": "#FF353535", "Brush.Text.Caret": "#FF000000", "Brush.Icon.Primary": "#FF171717", "Brush.Icon.Muted": "#FF676767", "Brush.Icon.Subtle": "#FF9C9C9C", "Brush.Border.Default": "#FF202020", "Brush.Border.Subtle": "#FFB5B5B5", "Brush.Ai.ProgressTrack": "#26111111"
+  },
+  "dark": {
+    "Color.Shadow.Surface": "#18FFFFFF", "Color.Shadow.Content": "#30FFFFFF", "Color.Shadow.Icon": "#FFF5F5F5",
+    "Color.Toggle.TrackOff": "#333333", "Color.Toggle.TrackOn": "#F5F5F5", "Color.Toggle.TrackOnHover": "#FFFFFF", "Color.Toggle.Thumb": "#171717", "Color.Toggle.ThumbHover": "#000000",
+    "Color.AiAccent.Start": "#F5F5F5", "Color.AiAccent.Middle": "#BDBDBD", "Color.AiAccent.End": "#707070",
+    "Brush.Surface.Window": "#FF0C0C0C", "Brush.Surface.Subtle": "#FF141414", "Brush.Surface.Raised": "#FF1C1C1C", "Brush.Text.OnAccent": "#FF101010", "Brush.Icon.OnAccent": "#FF101010", "Brush.Border.Raised": "#FF3A3A3A",
+    "Brush.Control.FillSubtle": "#FF202020", "Brush.Control.FillMuted": "#FF303030", "Brush.Control.HoverSubtle": "#FF2A2A2A", "Brush.Control.Hover": "#FF404040", "Brush.Control.FocusSubtle": "#FF353535", "Brush.Control.PressedSubtle": "#FF4D4D4D", "Brush.Control.Pressed": "#FF666666", "Brush.Control.Highlight": "#FF252525", "Brush.Selection.Range": "#FF353535",
+    "Brush.Border.Control": "#FFBFBFBF", "Brush.Border.Soft": "#FF595959", "Brush.Border.Muted": "#FF343434", "Brush.Border.Focus": "#FFFFFFFF", "Brush.Separator.Default": "#FF4A4A4A", "Brush.Separator.Strong": "#FFD6D6D6", "Brush.ScrollBar.Thumb": "#FFD6D6D6", "Brush.ScrollBar.ThumbSubtle": "#FF707070",
+    "Brush.Overlay.Action": "#66FFFFFF", "Brush.Overlay.ActionHover": "#88FFFFFF",
+    "Brush.Text.Primary": "#FFF5F5F5", "Brush.Text.Secondary": "#FFD0D0D0", "Brush.Text.Muted": "#FFA0A0A0", "Brush.Text.Selection": "#FFD0D0D0", "Brush.Text.Caret": "#FFFFFFFF", "Brush.Icon.Primary": "#FFF5F5F5", "Brush.Icon.Muted": "#FFD0D0D0", "Brush.Icon.Subtle": "#FF969696", "Brush.Border.Default": "#FFD6D6D6", "Brush.Border.Subtle": "#FF707070", "Brush.Ai.ProgressTrack": "#40F5F5F5"
+  }
+}
