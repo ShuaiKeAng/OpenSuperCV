@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "version": "0.9.4",
+      "zh": {
+        "title": "当前版本",
+        "items": [
+          "• 新增更新日志，方便查看软件迭代。",
+          "• 强化 Agent 的系统提示、网页检索和上下文节约规则。"
+        ]
+      },
+      "en": {
+        "title": "Current version",
+        "items": [
+          "• Added release notes with bilingual version content for easier tracking of product changes.",
+          "• Strengthened Agent instructions, public web search safeguards, and context-saving rules."
+        ]
+      }
+    },
+    {
+      "version": "0.9.3",
+      "zh": {
+        "title": "数据迁移与安全",
+        "items": [
+          "• 支持导出、导入和迁移设置、工作区、历史与书签数据。",
+          "• 导入前增加完整性校验与回滚保护，降低数据迁移风险。"
+        ]
+      },
+      "en": {
+        "title": "Data migration and security",
+        "items": [
+          "• Added export, import, and migration for settings, workspaces, history, and bookmarks.",
+          "• Added import validation and rollback protection to reduce migration risk."
+        ]
+      }
+    },
+    {
+      "version": "0.9.2",
+      "zh": {
+        "title": "体验与个性化",
+        "items": [
+          "• 完善图片条目、文字背景、主题与显示语言等个性化选项。",
+          "• 新增欢迎页、用户协议和 AI 用量信息，补全首次使用与设置体验。"
+        ]
+      },
+      "en": {
+        "title": "Experience and personalization",
+        "items": [
+          "• Improved image items, text backgrounds, themes, and display-language options.",
+          "• Added the welcome tour, user agreement, and AI usage information for a more complete setup experience."
+        ]
+      }
+    },
+    {
+      "version": "0.9.0",
+      "zh": {
+        "title": "历史记录增强",
+        "items": [
+          "• 增加独立的长期历史记录与日期筛选，工作区内容可按需保留。",
+          "• 改进图片缓存和普通历史的管理边界，提升大量条目下的稳定性。"
+        ]
+      },
+      "en": {
+        "title": "History improvements",
+        "items": [
+          "• Added independent long-term history and date filtering, with retention managed per workspace.",
+          "• Improved the boundaries between image caching and ordinary history for better stability with many items."
+        ]
+      }
+    },
+    {
+      "version": "0.8.4",
+      "zh": {
+        "title": "Agent 稳定性",
+        "items": [
+          "• 优化流式工具调用、执行过程显示和长对话上下文压缩。",
+          "• 限制工具读取范围与内容大小，减少重复调用和无关上下文。"
+        ]
+      },
+      "en": {
+        "title": "Agent reliability",
+        "items": [
+          "• Improved streamed tool calls, execution traces, and context compression for long conversations.",
+          "• Limited tool-read scope and content size to reduce repeated calls and irrelevant context."
+        ]
+      }
+    },
+    {
+      "version": "0.8.2",
+      "zh": {
+        "title": "Agent 权限与操作",
+        "items": [
+          "• 增加只读、审核批准和完全访问三档 Agent 权限。",
+          "• 支持通过 Agent 筛选、编辑、新建、删除、置顶和标记文字条目。"
+        ]
+      },
+      "en": {
+        "title": "Agent permissions and actions",
+        "items": [
+          "• Added read-only, approval-required, and full-access Agent permission levels.",
+          "• Enabled Agents to filter, edit, create, delete, pin, and tag text entries."
+        ]
+      }
+    },
+    {
+      "version": "0.8.0",
+      "zh": {
+        "title": "Agent 模式",
+        "items": [
+          "• 推出基于工具调用的 AI 对话助手，可围绕当前工作区完成多条目任务。",
+          "• 支持从主窗口或单条目入口发起对话，并保留常规 AI 文本处理能力。"
+        ]
+      },
+      "en": {
+        "title": "Agent mode",
+        "items": [
+          "• Introduced a tool-using AI chat assistant for multi-item tasks in the current workspace.",
+          "• Added chat entry points from the main window and individual items while retaining standard AI text actions."
+        ]
+      }
+    },
+    {
+      "version": "0.7.5",
+      "zh": {
+        "title": "效率与显示",
+        "items": [
+          "• 完善全局快捷键、快速粘贴、深色模式和界面显示选项。",
+          "• 支持文字编辑、格式清理、颜色标记和条目导出。"
+        ]
+      },
+      "en": {
+        "title": "Efficiency and display",
+        "items": [
+          "• Improved global shortcuts, quick paste, dark mode, and display options.",
+          "• Added text editing, format cleanup, color tags, and item export."
+        ]
+      }
+    },
+    {
+      "version": "0.7.2",
+      "zh": {
+        "title": "组织与检索",
+        "items": [
+          "• 增加工作区、书签、置顶和关键词搜索，便于整理常用内容。",
+          "• 支持文字与图片剪贴板条目，并可按设置管理重复内容。"
+        ]
+      },
+      "en": {
+        "title": "Organization and search",
+        "items": [
+          "• Added workspaces, bookmarks, pins, and keyword search for organizing reusable content.",
+          "• Added text and image clipboard items, with configurable duplicate handling."
+        ]
+      }
+    },
+    {
+      "version": "0.7.0",
+      "zh": {
+        "title": "常规功能基础",
+        "items": [
+          "• 建立 Windows 剪贴板监听、条目列表、快速粘贴和基础设置。",
+          "• 提供清空、新建空白条目和常用窗口操作等日常效率功能。"
+        ]
+      },
+      "en": {
+        "title": "Core clipboard foundation",
+        "items": [
+          "• Established Windows clipboard capture, an item list, quick paste, and essential settings.",
+          "• Added everyday actions such as clear, new blank item, and common window controls."
+        ]
+      }
+    }
+  ]
+}

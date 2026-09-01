@@ -10,7 +10,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <AssemblyName>SuperCV</AssemblyName>
-    <Version>0.9.1</Version>
+    <Version>0.9.4</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <InformationalVersion>$(Version)</InformationalVersion>
@@ -37,6 +37,7 @@
   <ItemGroup>
     <Resource Include="Assets\SuperCV.Remastered.png" />
     <Resource Include="Assets\SuperCV.Remastered.Dark.png" />
+    <EmbeddedResource Include="ReleaseNotes.json" />
     <EmbeddedResource Include="Themes\*.json" />
     <Content Include="..\..\docs\SuperCV_使用说明书.md"
              Link="SuperCV_使用说明书.md"

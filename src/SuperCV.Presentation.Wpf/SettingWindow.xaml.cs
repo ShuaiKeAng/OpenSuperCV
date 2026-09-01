@@ -120,6 +120,15 @@ namespace SuperCV
             agreement.Show();
         }
 
+        private void OpenReleaseNotes_Click(object sender, RoutedEventArgs e)
+        {
+            var releaseNotes = new ReleaseNotesWindow
+            {
+                Owner = this,
+            };
+            releaseNotes.ShowDialog();
+        }
+
         private async void ChangeDataRoot_Click(object sender, RoutedEventArgs e)
         {
             if (_isDataTransferInProgress)

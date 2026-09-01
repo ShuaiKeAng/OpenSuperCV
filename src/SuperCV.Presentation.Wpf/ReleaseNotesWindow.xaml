@@ -1,0 +1,111 @@
+<Window x:Class="SuperCV.ReleaseNotesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:SuperCV"
+        Title="更新日志"
+        Width="399"
+        Height="540"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner">
+
+    <local:CrispShadowBorder CornerRadius="20"
+                             Background="{DynamicResource Brush.Surface.Window}"
+                             Margin="20">
+        <local:CrispShadowBorder.ShadowEffect>
+            <DropShadowEffect BlurRadius="30"
+                              ShadowDepth="0"
+                              Color="{DynamicResource Color.Shadow.Surface}"
+                              Opacity="0.5" />
+        </local:CrispShadowBorder.ShadowEffect>
+
+        <Grid Margin="0" RenderOptions.ClearTypeHint="Enabled">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid Margin="10" Background="Transparent" MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <local:CrispWindowHeaderLogo />
+                <Label Content="{Binding WindowTitle}" Style="{StaticResource WindowHeaderTitleStyle}" />
+                <Button Style="{StaticResource WindowHeaderCloseButtonStyle}"
+                        Click="Close_Click"
+                        ToolTip="{Binding CloseButtonText}"
+                        HorizontalAlignment="Right"
+                        Margin="4"
+                        AutomationProperties.Name="{Binding CloseButtonText}">
+                    <Path Data="M0,0 L10,10 M10,0 L0,10"
+                          Width="16"
+                          Height="16"
+                          Stroke="{DynamicResource Brush.Icon.Primary}"
+                          StrokeThickness="2"
+                          StrokeStartLineCap="Round"
+                          StrokeEndLineCap="Round"
+                          Stretch="Fill"
+                          IsHitTestVisible="False" />
+                </Button>
+            </Grid>
+
+            <ScrollViewer x:Name="ReleaseNotesScroller"
+                          Grid.Row="1"
+                          Margin="4,0,0,5"
+                          Padding="0"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          PanningMode="VerticalOnly"
+                          Focusable="True"
+                          AutomationProperties.Name="更新日志正文">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ScrollBarThin}">
+                        <Setter Property="Margin" Value="0,0,0,12" />
+                    </Style>
+                </ScrollViewer.Resources>
+
+                <ItemsControl ItemsSource="{Binding Sections}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:CrispShadowBorder Margin="6,5"
+                                                     Padding="10"
+                                                     Background="{DynamicResource Brush.Surface.Raised}"
+                                                     BorderBrush="{DynamicResource Brush.Border.Soft}"
+                                                     BorderThickness="1"
+                                                     CornerRadius="10">
+                                <local:CrispShadowBorder.ShadowEffect>
+                                    <DropShadowEffect BlurRadius="10"
+                                                      ShadowDepth="0"
+                                                      Color="{DynamicResource Color.Shadow.Surface}"
+                                                      Opacity="0.2" />
+                                </local:CrispShadowBorder.ShadowEffect>
+
+                                <StackPanel>
+                                    <TextBlock FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource Brush.Text.Primary}">
+                                        <Run Text="{Binding Version}" />
+                                        <Run Text=" · " />
+                                        <Run Text="{Binding Title}" />
+                                    </TextBlock>
+                                    <ItemsControl ItemsSource="{Binding Items}" Margin="0,4,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}"
+                                                           Margin="0,0,0,4"
+                                                           FontSize="10"
+                                                           LineHeight="14"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{DynamicResource Brush.Text.Secondary}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </local:CrispShadowBorder>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </local:CrispShadowBorder>
+</Window>

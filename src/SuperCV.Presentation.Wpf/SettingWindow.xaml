@@ -1339,7 +1339,7 @@
 
                     <!-- 关于页 -->
                     <TabItem Header="关于">
-                    <ScrollViewer Padding="0" VerticalScrollBarVisibility="Visible" Margin="0,0,0,0">
+                    <ScrollViewer Padding="0,0,0,5" VerticalScrollBarVisibility="Visible" Margin="0,0,0,0">
                         <ScrollViewer.Resources>
                             <Style TargetType="ScrollBar"
                 BasedOn="{StaticResource ScrollBarThin}">
@@ -1348,6 +1348,52 @@
                         </ScrollViewer.Resources>
 
                         <StackPanel Orientation="Vertical" Margin="5,0,0,0">
+                            <local:CrispShadowBorder Height="135"
+                                          Margin="5"
+                                          Background="{DynamicResource Brush.Surface.Raised}"
+                                          BorderBrush="{DynamicResource Brush.Border.Soft}"
+                                          BorderThickness="1"
+                                          CornerRadius="10">
+                                <local:CrispShadowBorder.ShadowEffect>
+                                    <DropShadowEffect BlurRadius="10"
+                                           ShadowDepth="0"
+                                           Color="{DynamicResource Color.Shadow.Surface}"
+                                           Opacity="0.2"/>
+                                </local:CrispShadowBorder.ShadowEffect>
+                                <StackPanel HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 AutomationProperties.Name="SuperCV 软件信息">
+
+                                    <local:CrispWindowHeaderLogo HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      
+                                                      
+                                                      AutomationProperties.Name="SuperCV 标志"/>
+
+
+                                    <TextBlock Text="SuperCV"
+                                    HorizontalAlignment="Center"
+                                    FontSize="22"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource Brush.Text.Primary}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect BlurRadius="6" Opacity="0.7" Color="{DynamicResource Color.Shadow.Content}"/>
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Text="AI驱动的智能剪贴板"
+HorizontalAlignment="Center"
+Margin="0,4,0,0"
+FontSize="12"
+Foreground="{DynamicResource Brush.Text.Muted}"/>
+                                    <TextBlock HorizontalAlignment="Center"
+                                    Margin="0,5,0,0"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource Brush.Text.Muted}">
+                             <Run Text="版本 "/>
+                             <Run Text="{x:Static local:SuperCVWindow.ApplicationVersion}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </local:CrispShadowBorder>
                             <local:CrispShadowBorder
                                                      Margin="5"
                                                      Background="{DynamicResource Brush.Surface.Raised}"
@@ -1521,57 +1567,46 @@
                                             </Viewbox>
                                         </Grid>
                                     </Button>
+                                    <Button Margin="3" Height="46"
+                                            Style="{StaticResource SettingsInsetActionButtonStyle}"
+                                            Click="OpenReleaseNotes_Click"
+                                            AutomationProperties.Name="更新日志"
+                                            AutomationProperties.HelpText="查看当前版本的功能更新与改进">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="30" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Grid.Column="0" Margin="2">
+                                                <Label Content="更新日志"
+                                                       Padding="5,3,0,0"
+                                                       FontWeight="DemiBold"
+                                                       VerticalAlignment="Top"
+                                                       FontSize="14"
+                                                       Foreground="{DynamicResource Brush.Text.Primary}" />
+                                                <Label Content="查看版本的功能更新与改进"
+                                                       Padding="5,0,0,3"
+                                                       FontSize="12"
+                                                       VerticalAlignment="Bottom"
+                                                       Foreground="{DynamicResource Brush.Text.Muted}" />
+                                            </Grid>
+                                            <Viewbox Grid.Column="1"
+                                                     Width="16"
+                                                     Height="16"
+                                                     Margin="0,0,10,0"
+                                                     HorizontalAlignment="Right"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False">
+                                                <ContentControl Content="{StaticResource Right}" />
+                                            </Viewbox>
+                                        </Grid>
+                                    </Button>
                                 </StackPanel>
                             </local:CrispShadowBorder>
 
 
 
-                            <local:CrispShadowBorder Height="135"
-                                                     Margin="5"
-                                                     Background="{DynamicResource Brush.Surface.Raised}"
-                                                     BorderBrush="{DynamicResource Brush.Border.Soft}"
-                                                     BorderThickness="1"
-                                                     CornerRadius="10">
-                                <local:CrispShadowBorder.ShadowEffect>
-                                    <DropShadowEffect BlurRadius="10"
-                                                      ShadowDepth="0"
-                                                      Color="{DynamicResource Color.Shadow.Surface}"
-                                                      Opacity="0.2"/>
-                                </local:CrispShadowBorder.ShadowEffect>
-                                <StackPanel HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            AutomationProperties.Name="SuperCV 软件信息">
-
-                                    <local:CrispWindowHeaderLogo HorizontalAlignment="Center"
-                                                                 VerticalAlignment="Center"
-                                                                 
-                                                                 
-                                                                 AutomationProperties.Name="SuperCV 标志"/>
-
-
-                                    <TextBlock Text="SuperCV"
-                                               HorizontalAlignment="Center"
-                                               FontSize="22"
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource Brush.Text.Primary}">
-                                        <TextBlock.Effect>
-                                            <DropShadowEffect BlurRadius="6" Opacity="0.7" Color="{DynamicResource Color.Shadow.Content}"/>
-                                        </TextBlock.Effect>
-                                    </TextBlock>
-                                    <TextBlock Text="AI驱动的智能剪贴板"
-           HorizontalAlignment="Center"
-           Margin="0,4,0,0"
-           FontSize="12"
-           Foreground="{DynamicResource Brush.Text.Muted}"/>
-                                    <TextBlock HorizontalAlignment="Center"
-                                               Margin="0,5,0,0"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource Brush.Text.Muted}">
-                                        <Run Text="版本 "/>
-                                        <Run Text="{x:Static local:SuperCVWindow.ApplicationVersion}"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </local:CrispShadowBorder>
+                            
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
