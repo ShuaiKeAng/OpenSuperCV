@@ -6,11 +6,14 @@ public sealed class ClipboardChangeDetector
 {
     private static readonly TimeSpan FormatUpdateDebounceWindow =
         TimeSpan.FromMilliseconds(1500);
+    private static readonly TimeSpan NewEntryThrottleWindow =
+        TimeSpan.FromMilliseconds(500);
 
     private readonly object _gate = new();
     private string? _lastFingerprint;
     private string? _lastAcceptedContentKey;
     private DateTimeOffset _lastAcceptedAtUtc;
+    private DateTimeOffset _lastNewEntryAcceptedAtUtc;
 
     public ClipboardChangeDetection DetectChange(
         Dictionary<TextFormat, string> formats,
@@ -69,6 +72,37 @@ public sealed class ClipboardChangeDetector
             _lastFingerprint = null;
             _lastAcceptedContentKey = null;
             _lastAcceptedAtUtc = default;
+            _lastNewEntryAcceptedAtUtc = default;
+        }
+    }
+
+    /// <summary>
+    /// Prevents clipboard producers that publish an item in several rapid updates from creating
+    /// more than one history entry. This intentionally applies to both text and images.
+    /// </summary>
+    public bool IsNewEntryThrottled(DateTimeOffset observedAtUtc)
+    {
+        lock (_gate)
+        {
+            if (_lastNewEntryAcceptedAtUtc == default)
+            {
+                return false;
+            }
+
+            TimeSpan elapsed = observedAtUtc - _lastNewEntryAcceptedAtUtc;
+            return elapsed < TimeSpan.Zero || elapsed < NewEntryThrottleWindow;
+        }
+    }
+
+    /// <summary>
+    /// Records an entry only after it has actually been retained by history, so an ignored or
+    /// duplicate entry never starts the throttle window.
+    /// </summary>
+    public void RecordNewEntryAccepted(DateTimeOffset acceptedAtUtc)
+    {
+        lock (_gate)
+        {
+            _lastNewEntryAcceptedAtUtc = acceptedAtUtc;
         }
     }
 

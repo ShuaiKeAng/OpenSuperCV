@@ -217,9 +217,9 @@ public static class CVListControl
         Synchronize(_service.Snapshot);
     }
 
-    public static void Add(Dictionary<TextFormat, string> formats)
+    public static ClipboardEntry? Add(Dictionary<TextFormat, string> formats)
     {
-        AddAsync(formats).AsTask().GetAwaiter().GetResult();
+        return AddAsync(formats).AsTask().GetAwaiter().GetResult();
     }
 
     public static ValueTask<ClipboardEntry?> AddAsync(

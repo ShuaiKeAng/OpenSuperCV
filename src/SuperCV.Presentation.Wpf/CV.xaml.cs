@@ -46,7 +46,7 @@ namespace SuperCV
         }
 
         private static readonly TimeSpan VerticalExitAnimationDuration =
-            TimeSpan.FromMilliseconds(280);
+            TimeSpan.FromMilliseconds(420);
         private static readonly TimeSpan ExitAnimationClosePadding =
             TimeSpan.FromMilliseconds(20);
         private static readonly TimeSpan ContentPressAnimationDuration =
@@ -491,7 +491,7 @@ namespace SuperCV
             {
                 animationDuration = VerticalExitAnimationDuration;
                 closeDelay = animationDuration + ExitAnimationClosePadding;
-                DoubleAnimation slideDown = new DoubleAnimation(this.Top, -200, animationDuration);
+                DoubleAnimation slideDown = new DoubleAnimation(this.Top, -160, animationDuration);
                 slideDown.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
                 this.BeginAnimation(Window.TopProperty, slideDown);
@@ -500,7 +500,7 @@ namespace SuperCV
             {
                 animationDuration = VerticalExitAnimationDuration;
                 closeDelay = animationDuration + ExitAnimationClosePadding;
-                DoubleAnimation slideDown = new DoubleAnimation(this.Top, SystemParameters.FullPrimaryScreenHeight + 200, animationDuration);
+                DoubleAnimation slideDown = new DoubleAnimation(this.Top, SystemParameters.FullPrimaryScreenHeight+100, animationDuration);
                 slideDown.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
                 this.BeginAnimation(Window.TopProperty, slideDown);
@@ -510,7 +510,7 @@ namespace SuperCV
             {
                 closeDelay = TimeSpan.FromMilliseconds(
                     Setting.EnableAdvancedAnimation ? 240 : 160);
-                DoubleAnimation slideDown = new DoubleAnimation(this.Left, SystemParameters.FullPrimaryScreenWidth + 200, TimeSpan.FromSeconds(1.2));
+                DoubleAnimation slideDown = new DoubleAnimation(this.Left, SystemParameters.FullPrimaryScreenWidth + 200, TimeSpan.FromSeconds(1.5));
                 slideDown.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
 
                 this.BeginAnimation(Window.LeftProperty, slideDown);

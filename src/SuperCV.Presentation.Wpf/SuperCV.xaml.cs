@@ -1460,6 +1460,21 @@ filter_entries 只用于内部筛选和推理，绝不改变用户看到的列�
             {
                 return;
             }
+
+            if (e.OnMySelf)
+            {
+                return;
+            }
+
+            DateTimeOffset observedAtUtc = DateTimeOffset.UtcNow;
+            // Do this before change detection. A throttled clipboard update must not become the
+            // detector's latest fingerprint, otherwise deliberately copying it again after the
+            // throttle expires would incorrectly appear unchanged.
+            if (Detector.IsNewEntryThrottled(observedAtUtc))
+            {
+                return;
+            }
+
             ClipboardChangeDetection detection = Detector.DetectChange(
                 formats,
                 e.CapturedAtUtc);
@@ -1467,11 +1482,14 @@ filter_entries 只用于内部筛选和推理，绝不改变用户看到的列�
             if ((Setting.CanDuplicatePaste ||
                   Setting.RemoveOldDuplicateEntriesOnCopy ||
                   detection.Changed) &&
-                !detection.IsFormatUpdateBurst &&
-                !e.OnMySelf)
+                !detection.IsFormatUpdateBurst)
             {
-                StartPulseAnimation();
-                CVListControl.Add(formats);
+                var entry = CVListControl.Add(formats);
+                if (entry is not null)
+                {
+                    Detector.RecordNewEntryAccepted(observedAtUtc);
+                    StartPulseAnimation();
+                }
             }
             //Dictionary<TextFormat, string> AllTextFormats= MyClipboard.GetAllTextFormats();
             //var item = new CVdata(DateTime.Now,AllTextFormats);
