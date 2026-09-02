@@ -375,8 +375,8 @@ namespace SuperCV
 
             // Popup is hosted by an independent CV window. Keep the low-frequency timer alive
             // so it can resume naturally once every popup closes, but restart the idle period
-            // while any popup is open to ensure an active child surface is never retracted.
-            if (CVListControl.HasOpenPopup())
+            // while any popup is open or the main search box is receiving keyboard input.
+            if (CVListControl.HasOpenPopup() || text1.HasKeyboardInputFocus)
             {
                 _lastMouseActivityTimestamp = Stopwatch.GetTimestamp();
                 return;

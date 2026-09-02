@@ -148,6 +148,8 @@ namespace SuperCV
 
         public SearchFilterMode FilterMode => _filterMode;
 
+        public bool HasKeyboardInputFocus => textBox.IsKeyboardFocused;
+
         public void ResetSearch()
         {
             _lastText = string.Empty;
@@ -155,7 +157,7 @@ namespace SuperCV
             EnterIcon.Visibility = Visibility.Collapsed;
             ResetFilterMode();
             SearchCancel?.Invoke(this, EventArgs.Empty);
-            Input = false;
+            CollapseSearchBox();
             ICON.Child = (Path)FindResource("Search");
             UpdateVisualState();
         }
@@ -171,18 +173,36 @@ namespace SuperCV
                     ResetFilterMode();
                     SearchCancel?.Invoke(this, EventArgs.Empty);
                     ICON.Child = (Path)FindResource("Search");
-                    Input = false;
+                    CollapseSearchBox();
                 }
 
                     Text = "";
             }
             else
             {
+                textBox.IsEnabled = true;
+                textBox.IsReadOnly = false;
                 Input = true;
                 ICON.Child = (Path)FindResource("Right");
+                textBox.Focus();
             }
 
         }
+
+        private void CollapseSearchBox()
+        {
+            Input = false;
+            textBox.IsEnabled = false;
+            textBox.IsReadOnly = true;
+
+            // Move focus out of the input before the collapse animation finishes, so the
+            // hidden TextBox cannot continue receiving keyboard input.
+            if (!button.Focus())
+            {
+                Keyboard.ClearFocus();
+            }
+        }
+
         private string _lastText = "";
         private void textBox_TextChanged(object sender, TextChangedEventArgs e)
         {
