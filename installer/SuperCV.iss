@@ -39,6 +39,7 @@ Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
 WizardSizePercent=110
+ShowLanguageDialog=yes
 CloseApplications=yes
 RestartApplications=no
 DirExistsWarning=no
@@ -47,15 +48,51 @@ UsePreviousTasks=yes
 SetupLogging=yes
 VersionInfoVersion={#MyAppVersion}
 VersionInfoCompany={#MyAppPublisher}
-VersionInfoDescription={#MyAppName} 安装程序
+VersionInfoDescription={#MyAppName} Setup
 VersionInfoProductName={#MyAppName}
 VersionInfoProductVersion={#MyAppVersion}
 
 [Languages]
-Name: "chinesesimplified"; MessagesFile: "compiler:Default.isl,Languages\ChineseSimplified.isl"
+Name: "english"; MessagesFile: "compiler:Default.isl,Languages\LanguageSelection.isl"
+Name: "chinesesimplified"; MessagesFile: "compiler:Default.isl,Languages\ChineseLanguageName.isl,Languages\LanguageSelection.isl"
+
+[CustomMessages]
+DesktopIconDescription=Create a desktop shortcut
+AdditionalOptions=Additional options:
+LaunchApplication=Launch SuperCV
+DataRootTitle=Choose data location
+DataRootDescription=Set the default SuperCV data folder
+DataRootInstructions=SuperCV stores settings, workspaces, history, and image cache in this folder. We recommend a folder writable by the current user.
+DataRootLabel=Data location:
+DataRootRequired=Please choose a data location.
+DataRootOverlap=The data location cannot be the installation folder, its parent folder, or a subfolder. Choose another folder writable by the current user.
+RuntimeChoiceTitle=Choose runtime installation method
+RuntimeChoiceDescription=SuperCV requires Microsoft .NET 8 Desktop Runtime (x64)
+RuntimeChoiceInstructions=Choose how to obtain it. Automatic download shows the current speed; you can also open Microsoft's official download page to install it manually.
+RuntimeDownloadRecommended=Download and install automatically (recommended)
+RuntimeDownloadManual=Open Microsoft's official download page to install manually
+RuntimeDownloadingTitle=Downloading runtime
+RuntimeDownloadingDescription=Downloading components required by SuperCV from Microsoft. Setup will continue automatically when finished.
+RuntimeInstallingTitle=Installing runtime
+RuntimeInstallingDescription=Microsoft's installer displays its own progress. Complete any Windows permission prompt to continue.
+RuntimeDownloadProgress=Downloading Microsoft .NET 8 Desktop Runtime (x64)...
+RuntimeDownloadSpeed=Current speed:
+RuntimePreparingBundled=Preparing the bundled Microsoft .NET 8 Desktop Runtime (x64)...
+RuntimeBundledDescription=The complete installer does not need an internet connection to obtain the runtime.
+RuntimeExtractFailed=Unable to extract the bundled Microsoft .NET 8 Desktop Runtime.%n%nDetails: %1
+RuntimeConnecting=Connecting...
+RuntimeDownloadCancelled=The Microsoft .NET 8 Desktop Runtime download was cancelled.%n%nClick Install again to retry.
+RuntimeDownloadFailed=Unable to download the Microsoft .NET 8 Desktop Runtime (x64) required by SuperCV.%n%nCheck your network or proxy settings and retry.%nDetails: %1
+RuntimeInstallingProgress=Installing Microsoft .NET 8 Desktop Runtime (x64)...
+RuntimeInstallingProgressDescription=Approve the Windows User Account Control prompt and keep this window open until installation is complete.
+RuntimeLaunchFailed=Unable to start the Microsoft .NET 8 Desktop Runtime installer.%n%nAllow the Windows User Account Control prompt and retry.%nSystem error code: %1%nSystem message: %2
+RuntimeInstallFailed=Microsoft .NET 8 Desktop Runtime installation failed.%n%nInstaller exit code: %1
+RuntimeNotDetected=Microsoft .NET 8 Desktop Runtime was installed but could not be detected.%n%nRestart Windows, then run the SuperCV installer again.
+RuntimeManualOpenFailed=Unable to open the Microsoft .NET 8 download page.%n%n%1%n%nSystem message: %2
+RuntimeManualOpened=Download and install the Windows x64 version from the “.NET Desktop Runtime” section of the Microsoft page.%n%nAfter installation finishes, return to this wizard and click Next again.
 
 [Tasks]
-Name: "desktopicon"; Description: "创建桌面快捷方式"; GroupDescription: "附加选项："; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:DesktopIconDescription}"; GroupDescription: "{cm:AdditionalOptions}"; Flags: unchecked
 
 [Files]
 Source: "{#PublishDir}\*"; DestDir: "{app}"; Excludes: "*.pdb,runtimes\browser-wasm\*,runtimes\linux-*\*,runtimes\maccatalyst-*\*,runtimes\osx-*\*,runtimes\win-arm\*,runtimes\win-arm64\*,runtimes\win-x86\*"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -74,7 +111,7 @@ Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingD
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "运行 {#MyAppName}"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchApplication}"; WorkingDir: "{app}"; Flags: nowait postinstall skipifsilent
 
 [Code]
 const
@@ -85,6 +122,7 @@ const
   DotNetInstallRootKey = 'SOFTWARE\dotnet\Setup\InstalledVersions\x64';
   DataRootRegistryKey = 'Software\SuperCV';
   DataRootRegistryValue = 'DataRoot';
+  SettingsFileName = 'settings.json';
 
 var
   DataRootPage: TInputDirWizardPage;
@@ -185,8 +223,8 @@ begin
     ProgressText := FormatByteCount(Progress);
 
   DotNetRuntimeDownloadPage.SetText(
-    '正在下载 Microsoft .NET 8 Desktop Runtime (x64)...',
-    ProgressText + '    当前速度：' + DownloadSpeedText);
+    CustomMessage('RuntimeDownloadProgress'),
+    ProgressText + '    ' + CustomMessage('RuntimeDownloadSpeed') + ' ' + DownloadSpeedText);
   Result := True;
 end;
 
@@ -194,34 +232,34 @@ procedure InitializeWizard;
 begin
   DataRootPage := CreateInputDirPage(
     wpSelectDir,
-    '选择数据存储位置',
-    '设置 SuperCV 默认数据文件夹',
-    'SuperCV 会在该文件夹中保存设置、工作区、历史记录和图片缓存。建议使用当前用户可写的文件夹。',
+    CustomMessage('DataRootTitle'),
+    CustomMessage('DataRootDescription'),
+    CustomMessage('DataRootInstructions'),
     False,
     '');
-  DataRootPage.Add('数据存储位置：');
+  DataRootPage.Add(CustomMessage('DataRootLabel'));
   DataRootPage.Values[0] := GetInitialDataRoot;
 
   DotNetRuntimeChoicePage := CreateInputOptionPage(
     wpSelectTasks,
-    '选择运行环境安装方式',
-    'SuperCV 需要 Microsoft .NET 8 Desktop Runtime (x64)',
-    '请选择获取方式。自动下载会显示实时速度；也可以打开 Microsoft 官方网页手动安装。',
+    CustomMessage('RuntimeChoiceTitle'),
+    CustomMessage('RuntimeChoiceDescription'),
+    CustomMessage('RuntimeChoiceInstructions'),
     True,
     False);
-  DotNetRuntimeChoicePage.Add('自动下载并安装（推荐）');
-  DotNetRuntimeChoicePage.Add('打开 Microsoft 官方下载网页手动安装');
+  DotNetRuntimeChoicePage.Add(CustomMessage('RuntimeDownloadRecommended'));
+  DotNetRuntimeChoicePage.Add(CustomMessage('RuntimeDownloadManual'));
   DotNetRuntimeChoicePage.SelectedValueIndex := 0;
 
   DotNetRuntimeDownloadPage := CreateDownloadPage(
-    '正在下载运行环境',
-    '正在从 Microsoft 下载 SuperCV 所需的组件。下载完成后将自动继续。',
+    CustomMessage('RuntimeDownloadingTitle'),
+    CustomMessage('RuntimeDownloadingDescription'),
     @OnDotNetRuntimeDownloadProgress);
   DotNetRuntimeDownloadPage.ShowBaseNameInsteadOfUrl := True;
 
   DotNetRuntimeInstallPage := CreateOutputMarqueeProgressPage(
-    '正在安装运行环境',
-    'Microsoft 安装程序会显示独立的安装进度，请完成 Windows 权限确认。');
+    CustomMessage('RuntimeInstallingTitle'),
+    CustomMessage('RuntimeInstallingDescription'));
 end;
 
 function DotNetExecutableHasDesktopRuntime(
@@ -245,7 +283,7 @@ begin
       @InspectDotNetRuntimeOutput);
   except
     Log(
-      '检测 .NET Desktop Runtime 时无法运行 ' +
+      'Unable to run while checking .NET Desktop Runtime: ' +
       DotNetExecutable + ': ' + GetExceptionMessage);
   end;
 
@@ -307,6 +345,22 @@ begin
 #endif
 end;
 
+function FormatCustomMessage1(const MessageName, Value: String): String;
+begin
+  Result := CustomMessage(MessageName);
+  StringChangeEx(Result, '%1', Value, True);
+  StringChangeEx(Result, '%n', #13#10, True);
+end;
+
+function FormatCustomMessage2(
+  const MessageName, FirstValue, SecondValue: String): String;
+begin
+  Result := CustomMessage(MessageName);
+  StringChangeEx(Result, '%1', FirstValue, True);
+  StringChangeEx(Result, '%2', SecondValue, True);
+  StringChangeEx(Result, '%n', #13#10, True);
+end;
+
 function NextButtonClick(CurPageID: Integer): Boolean;
 var
   ErrorCode: Integer;
@@ -319,7 +373,7 @@ begin
     DataRoot := Trim(DataRootPage.Values[0]);
     if DataRoot = '' then
     begin
-      MsgBox('请选择数据存储位置。', mbError, MB_OK);
+      MsgBox(CustomMessage('DataRootRequired'), mbError, MB_OK);
       Result := False;
       Exit;
     end;
@@ -327,10 +381,7 @@ begin
     DataRoot := ExpandFileName(DataRoot);
     if PathsOverlap(DataRoot, ExpandConstant('{app}')) then
     begin
-      MsgBox(
-        '数据存储位置不能是安装目录或其父、子目录。请选择其他当前用户可写的文件夹。',
-        mbError,
-        MB_OK);
+      MsgBox(CustomMessage('DataRootOverlap'), mbError, MB_OK);
       Result := False;
       Exit;
     end;
@@ -354,20 +405,14 @@ begin
     ewNoWait,
     ErrorCode) then
   begin
-    MsgBox(
-      '无法打开 Microsoft .NET 8 下载网页。' + #13#10 + #13#10 +
-      DotNetDesktopRuntimePageUrl + #13#10 +
-      '系统说明：' + SysErrorMessage(ErrorCode),
-      mbError,
-      MB_OK);
+    MsgBox(FormatCustomMessage2(
+      'RuntimeManualOpenFailed',
+      DotNetDesktopRuntimePageUrl,
+      SysErrorMessage(ErrorCode)), mbError, MB_OK);
   end
   else
   begin
-    MsgBox(
-      '请在 Microsoft 网页的“.NET Desktop Runtime”区域下载并安装 Windows x64 版本。' + #13#10 + #13#10 +
-      '安装完成后返回此向导，再次点击“下一步”。',
-      mbInformation,
-      MB_OK);
+    MsgBox(CustomMessage('RuntimeManualOpened'), mbInformation, MB_OK);
   end;
 
   Result := False;
@@ -388,17 +433,16 @@ begin
 
 #ifdef BundledDotNetRuntimePath
   DotNetRuntimeInstallPage.SetText(
-    '正在准备内置的 Microsoft .NET 8 Desktop Runtime (x64)...',
-    '完整安装包无需联网下载运行环境。');
+    CustomMessage('RuntimePreparingBundled'),
+    CustomMessage('RuntimeBundledDescription'));
   DotNetRuntimeInstallPage.Show;
   DotNetRuntimeInstallPage.Animate;
   try
     try
       ExtractTemporaryFile(DotNetDesktopRuntimeFileName);
     except
-      Result :=
-        '无法从完整安装包中提取 Microsoft .NET 8 Desktop Runtime。' + #13#10 + #13#10 +
-        '详细信息：' + GetExceptionMessage;
+      Result := FormatCustomMessage1(
+        'RuntimeExtractFailed', GetExceptionMessage);
       Exit;
     end;
   finally
@@ -418,18 +462,14 @@ begin
 
       DownloadLastTick := GetTickCount64;
       DownloadLastBytes := 0;
-      DownloadSpeedText := '正在连接...';
+      DownloadSpeedText := CustomMessage('RuntimeConnecting');
       DotNetRuntimeDownloadPage.Download;
     except
       if DotNetRuntimeDownloadPage.AbortedByUser then
-        Result :=
-          '已取消下载 Microsoft .NET 8 Desktop Runtime。' + #13#10 + #13#10 +
-          '可以重新点击“安装”后再次尝试。'
+        Result := CustomMessage('RuntimeDownloadCancelled')
       else
-        Result :=
-          '无法下载 SuperCV 所需的 Microsoft .NET 8 Desktop Runtime (x64)。' + #13#10 + #13#10 +
-          '请检查网络或代理设置后重试。' + #13#10 +
-          '详细信息：' + GetExceptionMessage;
+        Result := FormatCustomMessage1(
+          'RuntimeDownloadFailed', GetExceptionMessage);
       Exit;
     end;
   finally
@@ -443,8 +483,8 @@ begin
     RuntimeInstallerParameters := '/install /passive /norestart';
 
   DotNetRuntimeInstallPage.SetText(
-    '正在安装 Microsoft .NET 8 Desktop Runtime (x64)...',
-    '请确认 Windows 用户账户控制提示；安装完成前请勿关闭进度窗口。');
+    CustomMessage('RuntimeInstallingProgress'),
+    CustomMessage('RuntimeInstallingProgressDescription'));
   DotNetRuntimeInstallPage.Show;
   DotNetRuntimeInstallPage.Animate;
   try
@@ -457,11 +497,10 @@ begin
       ewWaitUntilTerminated,
       ResultCode) then
     begin
-      Result :=
-        '无法启动 Microsoft .NET 8 Desktop Runtime 安装程序。' + #13#10 + #13#10 +
-        '请允许 Windows 用户账户控制提示后重试。' + #13#10 +
-        '系统错误代码：' + IntToStr(ResultCode) + #13#10 +
-        '系统说明：' + SysErrorMessage(ResultCode);
+      Result := FormatCustomMessage2(
+        'RuntimeLaunchFailed',
+        IntToStr(ResultCode),
+        SysErrorMessage(ResultCode));
       Exit;
     end;
   finally
@@ -470,9 +509,8 @@ begin
 
   if (ResultCode <> 0) and (ResultCode <> 3010) then
   begin
-    Result :=
-      'Microsoft .NET 8 Desktop Runtime 安装失败。' + #13#10 + #13#10 +
-      '安装程序退出代码：' + IntToStr(ResultCode);
+    Result := FormatCustomMessage1(
+      'RuntimeInstallFailed', IntToStr(ResultCode));
     Exit;
   end;
 
@@ -481,8 +519,39 @@ begin
 
   if not IsDotNet8DesktopRuntimeInstalled then
   begin
-    Result :=
-      'Microsoft .NET 8 Desktop Runtime 安装完成后仍未能检测到运行环境。' + #13#10 + #13#10 +
-      '请重新启动 Windows 后再次运行 SuperCV 安装程序。';
+    Result := CustomMessage('RuntimeNotDetected');
   end;
+end;
+
+function GetSelectedApplicationLanguage: String;
+begin
+  if CompareText(ActiveLanguage, 'english') = 0 then
+    Result := 'en-US'
+  else
+    Result := 'zh-CN';
+end;
+
+procedure SaveInitialApplicationLanguage;
+var
+  SettingsFilePath: String;
+  Language: String;
+begin
+  SettingsFilePath := AddBackslash(GetSelectedDataRoot('')) + SettingsFileName;
+  if FileExists(SettingsFilePath) or FileExists(SettingsFilePath + '.bak') then
+    Exit;
+
+  Language := GetSelectedApplicationLanguage;
+  if not SaveStringToFile(
+    SettingsFilePath,
+    '{"schemaVersion":2,"payload":{"language":"' + Language + '"}}',
+    False) then
+    Log('Unable to save initial SuperCV language settings: ' + SettingsFilePath)
+  else
+    Log('Saved initial SuperCV language: ' + Language);
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+    SaveInitialApplicationLanguage;
 end;
