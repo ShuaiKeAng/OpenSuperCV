@@ -19,6 +19,8 @@ public sealed class ClipboardPayload : IEquatable<ClipboardPayload>
     public const int MaximumTextCharactersPerFormat = 1_000_000;
     private const int CompressionThresholdBytes = 4 * 1024;
     private const int FingerprintBufferSize = 16 * 1024;
+    private const string HtmlStartFragmentMarker = "<!--StartFragment-->";
+    private const string HtmlEndFragmentMarker = "<!--EndFragment-->";
     private static readonly IReadOnlyDictionary<ClipboardFormat, StoredText> EmptyFormats =
         new ReadOnlyDictionary<ClipboardFormat, StoredText>(new Dictionary<ClipboardFormat, StoredText>());
 
@@ -132,6 +134,42 @@ public sealed class ClipboardPayload : IEquatable<ClipboardPayload>
         return Convert.ToHexString(hash.GetHashAndReset());
     }
 
+    /// <summary>
+    /// Computes an identity for the user-visible clipboard content rather than its producer-specific
+    /// serialization. Rich clipboard producers such as Word can regenerate RTF metadata while the
+    /// visible text remains unchanged, so the raw payload fingerprint is not suitable for duplicate
+    /// detection.
+    /// </summary>
+    public string ComputeContentFingerprint()
+    {
+        if (DeferredPayload is { } deferred) return deferred.ComputeContentFingerprint();
+
+        string? primaryText = TryGetText(ClipboardFormat.UnicodeText, out string unicodeText)
+            ? unicodeText
+            : TryGetText(ClipboardFormat.Text, out string text)
+                ? text
+                : null;
+        if (primaryText is not null)
+        {
+            string? htmlFragment = TryGetText(ClipboardFormat.Html, out string html)
+                ? ExtractHtmlFragment(html)
+                : null;
+            return ComputeNormalizedTextFingerprint(primaryText, htmlFragment);
+        }
+
+        // Images and uncommon HTML/RTF-only payloads do not have a reliable plain-text identity.
+        // Preserve their existing exact comparison semantics until a content-based binary identity
+        // is available.
+        return $"raw:{ComputeFingerprint()}";
+    }
+
+    public bool ContentEquals(ClipboardPayload? other) =>
+        other is not null &&
+        string.Equals(
+            ComputeContentFingerprint(),
+            other.ComputeContentFingerprint(),
+            StringComparison.Ordinal);
+
     public bool Equals(ClipboardPayload? other)
     {
         if (DeferredPayload is { } deferred) return deferred.Equals(other);
@@ -197,6 +235,48 @@ public sealed class ClipboardPayload : IEquatable<ClipboardPayload>
         int length = MaximumTextCharactersPerFormat;
         if (char.IsHighSurrogate(value[length - 1]) && char.IsLowSurrogate(value[length])) length--;
         return value[..length];
+    }
+
+    private static string ComputeNormalizedTextFingerprint(
+        string value,
+        string? htmlFragment)
+    {
+        using var hash = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        hash.AppendData([0x01]);
+        AppendNormalizedUtf8(hash, value);
+        if (htmlFragment is not null)
+        {
+            hash.AppendData([0x00, 0x02]);
+            AppendNormalizedUtf8(hash, htmlFragment);
+        }
+
+        return $"text:{Convert.ToHexString(hash.GetHashAndReset())}";
+    }
+
+    private static string ExtractHtmlFragment(string html)
+    {
+        int start = html.IndexOf(
+            HtmlStartFragmentMarker,
+            StringComparison.OrdinalIgnoreCase);
+        if (start < 0)
+        {
+            return html;
+        }
+
+        start += HtmlStartFragmentMarker.Length;
+        int end = html.IndexOf(
+            HtmlEndFragmentMarker,
+            start,
+            StringComparison.OrdinalIgnoreCase);
+        return end >= start ? html[start..end] : html;
+    }
+
+    private static void AppendNormalizedUtf8(IncrementalHash hash, string value)
+    {
+        string normalized = value.IndexOf('\r') >= 0
+            ? value.Replace("\r\n", "\n", StringComparison.Ordinal).Replace('\r', '\n')
+            : value;
+        hash.AppendData(Encoding.UTF8.GetBytes(normalized));
     }
 
     private static void NormalizeMixedContent(Dictionary<ClipboardFormat, StoredText> formats)

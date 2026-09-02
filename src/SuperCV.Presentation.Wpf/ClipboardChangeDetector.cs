@@ -34,8 +34,8 @@ public sealed class ClipboardChangeDetector
                 },
                 pair => pair.Value));
 
-        string fingerprint = payload.ComputeFingerprint();
-        string? contentKey = CreateContentKey(payload);
+        string fingerprint = payload.ComputeContentFingerprint();
+        string? contentKey = payload.IsEmpty ? null : fingerprint;
         lock (_gate)
         {
             bool isFormatUpdateBurst = contentKey is not null &&
@@ -106,27 +106,6 @@ public sealed class ClipboardChangeDetector
         }
     }
 
-    private static string? CreateContentKey(ClipboardPayload payload)
-    {
-        if (payload.IsImage)
-        {
-            return string.IsNullOrEmpty(payload.ImageLink)
-                ? null
-                : $"image:{payload.ImageLink}";
-        }
-
-        string primaryText = payload.PrimaryText;
-        if (string.IsNullOrEmpty(primaryText))
-        {
-            return null;
-        }
-
-        string normalizedText = primaryText
-            .Replace("\r\n", "\n", StringComparison.Ordinal)
-            .Replace('\r', '\n')
-            .TrimEnd('\n');
-        return normalizedText.Length == 0 ? null : $"text:{normalizedText}";
-    }
 }
 
 public sealed record ClipboardChangeDetection(

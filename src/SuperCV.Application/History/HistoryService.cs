@@ -160,7 +160,8 @@ public sealed class HistoryService : IAsyncDisposable
             lock (_gate)
             {
                 EnsureReadyLocked();
-                if (!allowDuplicate && _entries.FirstOrDefault()?.Payload.Equals(payload) == true)
+                if (!allowDuplicate &&
+                    _entries.FirstOrDefault()?.Payload.ContentEquals(payload) == true)
                 {
                     return null;
                 }
@@ -172,13 +173,13 @@ public sealed class HistoryService : IAsyncDisposable
                 // Keep that newest entry in place; a matching entry farther down the history is
                 // still replaced below, so an intentional later re-copy continues to move it up.
                 if (removeOldDuplicateEntries &&
-                    _entries.FirstOrDefault()?.Payload.Equals(payload) == true)
+                    _entries.FirstOrDefault()?.Payload.ContentEquals(payload) == true)
                 {
                     return null;
                 }
 
                 duplicateEntries = removeOldDuplicateEntries
-                    ? _entries.Where(entry => entry.Payload.Equals(payload)).ToArray()
+                    ? _entries.Where(entry => entry.Payload.ContentEquals(payload)).ToArray()
                     : [];
                 workspaceId = _activeWorkspaceId;
             }
@@ -206,7 +207,7 @@ public sealed class HistoryService : IAsyncDisposable
                 if (removeOldDuplicateEntries)
                 {
                     _entries.RemoveAll(entry =>
-                        entry.Id != result.Id && entry.Payload.Equals(payload));
+                        entry.Id != result.Id && entry.Payload.ContentEquals(payload));
                 }
 
                 _ = EnforceLimitLocked(evictedEntries);
