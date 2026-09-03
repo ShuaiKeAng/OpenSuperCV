@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "terminal",
-  "displayName": { "zh-CN": "终端", "en-US": "Terminal" },
+  "displayName": { "zh-CN": "绿野", "en-US": "Greenfield" },
   "light": {
     "Color.Shadow.Surface": "#3D39A66B", "Color.Shadow.Content": "#4D187F3D", "Color.Shadow.Icon": "#146C32",
     "Color.Toggle.TrackOff": "#CFD8D0", "Color.Toggle.TrackOn": "#117A37", "Color.Toggle.TrackOnHover": "#20B15A", "Color.Toggle.Thumb": "#FFFFFF", "Color.Toggle.ThumbHover": "#D9FFE4",
