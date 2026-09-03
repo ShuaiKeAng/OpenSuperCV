@@ -7,15 +7,16 @@ using System.Text;
 
 namespace SuperCV;
 
-public sealed class PersistentHistoryItemViewModel
+public sealed class PersistentHistoryItemViewModel : INotifyPropertyChanged
 {
     private const int MaximumPreviewLength = 512;
+    private long _displayId;
 
     internal PersistentHistoryItemViewModel(PersistentHistoryItem item)
     {
         ArgumentNullException.ThrowIfNull(item);
         StorageKey = item.StorageKey;
-        DisplayId = item.DisplayId;
+        _displayId = item.DisplayId;
         StorageText = item.Text;
         IsImage = PersistentHistoryCodec.TryDecodeImage(item.Text, out string imageLink);
         Text = IsImage ? imageLink : item.Text;
@@ -30,7 +31,20 @@ public sealed class PersistentHistoryItemViewModel
 
     internal DateTimeOffset CapturedAtUtc { get; }
 
-    public long DisplayId { get; }
+    public long DisplayId
+    {
+        get => _displayId;
+        internal set
+        {
+            if (_displayId == value)
+            {
+                return;
+            }
+
+            _displayId = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayId)));
+        }
+    }
 
     internal string StorageText { get; }
 
@@ -41,6 +55,8 @@ public sealed class PersistentHistoryItemViewModel
     public string DisplayText { get; }
 
     public string CreatedAtDisplay { get; }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     private static string CreateSingleLinePreview(string text)
     {
@@ -362,20 +378,36 @@ public sealed class PersistentHistoryViewModel : INotifyPropertyChanged, IDispos
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(item);
         CancelCurrentLoad();
+
+        bool removed;
         if (_synchronizedHistory is null)
         {
-            await _service.DeleteAsync(_workspaceId, item.StorageKey);
+            removed = await _service.DeleteAsync(_workspaceId, item.StorageKey);
         }
         else
         {
-            await _synchronizedHistory.RemovePersistentEntryAsync(
+            removed = await _synchronizedHistory.RemovePersistentEntryAsync(
                 _workspaceId,
                 item.StorageKey,
                 item.CapturedAtUtc,
                 item.StorageText);
         }
 
-        await ReloadAsync();
+        if (removed && Entries.Remove(item))
+        {
+            _totalCount = Math.Max(0, _totalCount - 1);
+            RenumberEntries();
+            if (_cursor is not null)
+            {
+                _cursor = _cursor with
+                {
+                    NextDisplayId = Math.Max(1, _cursor.NextDisplayId - 1),
+                    TotalCount = _totalCount,
+                };
+            }
+
+            NotifyCollectionStateChanged();
+        }
     }
 
     public void Dispose()
@@ -467,6 +499,14 @@ public sealed class PersistentHistoryViewModel : INotifyPropertyChanged, IDispos
             }
 
             Entries.Insert(low, viewModel);
+        }
+    }
+
+    private void RenumberEntries()
+    {
+        for (int index = 0; index < Entries.Count; index++)
+        {
+            Entries[index].DisplayId = index + 1;
         }
     }
 
