@@ -147,7 +147,7 @@ namespace SuperCV
             string sourceRoot = AppRuntime.ResolveDataRoot();
             using var dialog = new Forms.FolderBrowserDialog
             {
-                Description = "选择一个空文件夹",
+                Description = LocalizationService.Current.T("选择一个空文件夹"),
                 SelectedPath = Directory.Exists(sourceRoot) ? sourceRoot : string.Empty,
                 ShowNewFolderButton = true,
             };
@@ -160,7 +160,7 @@ namespace SuperCV
             var confirmation = new AlertDialog(
                 "将把设置、工作区、历史、书签、指令、图片和 AI 用量迁移到目标目录。\n\n" +
                 "目标文件夹必须为空。迁移验证完成后，SuperCV 会立即重启并从新路径继续运行；确认新路径可用后会删除原数据目录。",
-                "迁移并重启")
+                "确定")
             {
                 Owner = this,
             };
@@ -195,8 +195,8 @@ namespace SuperCV
 
             var dialog = new SaveFileDialog
             {
-                Title = "导出 SuperCV 数据",
-                Filter = "SuperCV 迁移文件 (*" + DataTransferService.ArchiveExtension + ")|*" +
+                Title = LocalizationService.Current.T("导出 SuperCV 数据"),
+                Filter = LocalizationService.Current.T("SuperCV 迁移文件") + " (*" + DataTransferService.ArchiveExtension + ")|*" +
                          DataTransferService.ArchiveExtension,
                 DefaultExt = DataTransferService.ArchiveExtension,
                 AddExtension = true,
@@ -226,8 +226,8 @@ namespace SuperCV
 
             var dialog = new OpenFileDialog
             {
-                Title = "导入 SuperCV 数据",
-                Filter = "SuperCV 迁移文件 (*" + DataTransferService.ArchiveExtension + ")|*" +
+                Title = LocalizationService.Current.T("导入 SuperCV 数据"),
+                Filter = LocalizationService.Current.T("SuperCV 迁移文件") + " (*" + DataTransferService.ArchiveExtension + ")|*" +
                          DataTransferService.ArchiveExtension,
                 CheckFileExists = true,
                 Multiselect = false,

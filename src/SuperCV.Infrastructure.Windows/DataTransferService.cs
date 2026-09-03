@@ -2,8 +2,10 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text.Json;
 using SuperCV.Application.Ports;
+using SuperCV.Application.Workspaces;
 using SuperCV.Domain.Clipboard;
 using SuperCV.Domain.History;
+using SuperCV.Domain.Settings;
 using SuperCV.Domain.Workspaces;
 
 namespace SuperCV.Infrastructure.Windows;
@@ -134,6 +136,8 @@ public sealed class DataTransferService
                     temporaryRoot,
                     cancellationToken)
                 .ConfigureAwait(false);
+            await CreateMissingDefaultDocumentsAsync(temporaryRoot, cancellationToken)
+                .ConfigureAwait(false);
             await ValidateDecodedPayloadAsync(temporaryRoot, cancellationToken).ConfigureAwait(false);
 
             if (Directory.Exists(_stagingRoot))
@@ -222,6 +226,11 @@ public sealed class DataTransferService
                  {
                      V2Paths.WorkspacesDirectoryName,
                      V2Paths.InstructionsDirectoryName,
+                     // Themes are user data too: settings.json stores only the selected ID,
+                     // while the definitions live in this directory. Omitting them makes a
+                     // migrated selected theme look unavailable at the next startup and causes
+                     // the presentation layer to fall back to the default theme.
+                     "Themes",
                      "images",
                  })
         {
@@ -339,27 +348,14 @@ public sealed class DataTransferService
         string payloadRoot,
         CancellationToken cancellationToken)
     {
-        foreach (string requiredFile in new[]
-                 {
-                     V2Paths.SettingsFileName,
-                     V2Paths.WorkspacesFileName,
-                     V2Paths.BookmarksFileName,
-                 })
-        {
-            if (!File.Exists(Path.Combine(payloadRoot, requiredFile)))
-            {
-                throw new InvalidDataException($"导入文件缺少必要数据：{requiredFile}。");
-            }
-        }
-
         var settings = new JsonSettingsRepository(payloadRoot);
         var workspaces = new JsonWorkspaceRepository(payloadRoot);
         var bookmarks = new JsonBookmarkRepository(payloadRoot);
         var instructions = new MarkdownInstructionRepository(payloadRoot);
         _ = await settings.LoadAsync(cancellationToken).ConfigureAwait(false)
-            ?? throw new InvalidDataException("导入设置无法读取。");
+            ?? throw new InvalidDataException("默认设置无法读取。");
         WorkspaceState workspaceState = await workspaces.LoadAsync(cancellationToken).ConfigureAwait(false)
-            ?? throw new InvalidDataException("导入工作区无法读取。");
+            ?? throw new InvalidDataException("默认工作区无法读取。");
         _ = await bookmarks.LoadAsync(cancellationToken).ConfigureAwait(false);
         _ = await instructions.LoadAsync(cancellationToken).ConfigureAwait(false);
 
@@ -393,6 +389,72 @@ public sealed class DataTransferService
                     .ConfigureAwait(false);
             }
         }
+    }
+
+    /// <summary>
+    /// Older, first-run, or manually trimmed archives can legitimately omit empty root
+    /// documents. Create their normal defaults in the isolated staging directory so that a
+    /// harmless omission never blocks migration or replaces the live root with a partial state.
+    /// Existing documents are deliberately left untouched and still undergo normal validation.
+    /// </summary>
+    private static async ValueTask CreateMissingDefaultDocumentsAsync(
+        string payloadRoot,
+        CancellationToken cancellationToken)
+    {
+        if (!File.Exists(Path.Combine(payloadRoot, V2Paths.SettingsFileName)))
+        {
+            await new JsonSettingsRepository(payloadRoot)
+                .SaveAsync(new AppSettings(), cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        if (!File.Exists(Path.Combine(payloadRoot, V2Paths.WorkspacesFileName)))
+        {
+            await new JsonWorkspaceRepository(payloadRoot)
+                .SaveAsync(
+                    CreateRecoveredWorkspaceState(payloadRoot),
+                    cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        if (!File.Exists(Path.Combine(payloadRoot, V2Paths.BookmarksFileName)))
+        {
+            await new JsonBookmarkRepository(payloadRoot)
+                .SaveAsync([], cancellationToken)
+                .ConfigureAwait(false);
+        }
+    }
+
+    private static WorkspaceState CreateRecoveredWorkspaceState(string payloadRoot)
+    {
+        string workspacesPath = Path.Combine(payloadRoot, V2Paths.WorkspacesDirectoryName);
+        WorkspaceDefinition[] recovered = Directory.Exists(workspacesPath)
+            ? Directory.EnumerateDirectories(workspacesPath)
+                .Select(Path.GetFileName)
+                .Where(name => Guid.TryParse(name, out Guid id) && id != Guid.Empty)
+                .Select(name => Guid.Parse(name!))
+                .Distinct()
+                .OrderBy(id => id)
+                .Select((id, index) => new WorkspaceDefinition(
+                    id,
+                    id == WorkspaceDefinition.DefaultWorkspaceId
+                        ? WorkspaceService.DefaultWorkspaceName
+                        : $"恢复的工作区 {index + 1}"))
+                .ToArray()
+            : [];
+
+        if (recovered.Length == 0)
+        {
+            WorkspaceDefinition defaultWorkspace = new(
+                WorkspaceDefinition.DefaultWorkspaceId,
+                WorkspaceService.DefaultWorkspaceName);
+            recovered = [defaultWorkspace];
+        }
+
+        WorkspaceDefinition active = recovered.FirstOrDefault(
+            workspace => workspace.Id == WorkspaceDefinition.DefaultWorkspaceId)
+            ?? recovered[0];
+        return new WorkspaceState(active.Id, recovered);
     }
 
     private ClipboardEntry[] RemapImportedImageLinks(

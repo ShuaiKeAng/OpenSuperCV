@@ -274,6 +274,22 @@ public sealed class LocalizationService : INotifyPropertyChanged, IDisposable
             ["请先输入 API Key；仅本机回环地址可以留空。"] = "Enter an API key. Only local loopback endpoints may leave it blank.",
             ["自定义模型请先输入 API 地址。"] = "Enter the API address for the custom model.", ["自定义模型请先输入模型名称。"] = "Enter the custom model name.",
             ["导出 SuperCV 数据"] = "Export SuperCV data", ["导入 SuperCV 数据"] = "Import SuperCV data", ["SuperCV 迁移文件"] = "SuperCV migration file",
+            ["当前数据路径由环境变量指定。请先移除 SUPERCV_DATA_ROOT（或兼容旧变量 SUPERCV_V2_DATA_ROOT），再使用此功能。"] =
+                "The current data location is set by an environment variable. Remove SUPERCV_DATA_ROOT (or the legacy SUPERCV_V2_DATA_ROOT) before changing it here.",
+            ["将把设置、工作区、历史、书签、指令、图片和 AI 用量迁移到目标目录。\n\n目标文件夹必须为空。迁移验证完成后，SuperCV 会立即重启并从新路径继续运行；确认新路径可用后会删除原数据目录。"] =
+                "Settings, workspaces, history, bookmarks, instructions, images, and AI usage will be migrated to the destination.\n\nThe destination folder must be empty. After verification, SuperCV will restart at the new location; once it is confirmed available, the original data directory will be removed.",
+            ["已导出为单个迁移文件。请妥善保存，该文件可能包含你的剪贴板内容与 AI 配置。"] =
+                "Exported as one migration file. Keep it secure: it may contain clipboard content and AI configuration.",
+            ["导入会在文件完整性、版本和内容结构全部通过验证后，于重启时替换当前设置和内容。\n\n导入前的数据会保留一份本地回滚副本。跨 Windows 用户或电脑迁移时，AI API Key 受 Windows 保护，可能需要重新填写。"] =
+                "After integrity, version, and content checks pass, the import will replace current settings and content when SuperCV restarts.\n\nA local rollback copy of the existing data will be kept. When moving between Windows users or computers, the AI API key may need to be entered again because it is protected by Windows.",
+            ["迁移文件已通过校验；请退出并重新打开 SuperCV 以完成导入。"] =
+                "The migration file is verified. Exit and reopen SuperCV to complete the import.",
+            ["已验证并迁移 "] = "Verified and migrated ", [" 个数据文件。"] = " data files.",
+            ["SuperCV 将立即重启并使用新路径，同时删除原数据目录。"] =
+                "SuperCV will now restart at the new location and remove the original data directory.",
+            ["迁移文件已通过校验（创建于 "] = "Migration file verified (created ",
+            ["，包含 "] = ", containing ", [" 个文件）。"] = " files).",
+            ["SuperCV 现在需要重启以完成导入。"] = "SuperCV must restart to complete the import.",
             ["打开历史记录后按需加载"] = "Open History to load items", ["开始日期"] = "Start date", ["截止日期"] = "End date",
             ["选择起始日期"] = "Choose start date", ["选择截止日期"] = "Choose end date", ["AI问答"] = "AI chat",
         };
