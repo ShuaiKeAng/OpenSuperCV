@@ -12,7 +12,7 @@
         ResizeMode="CanResize"
         AllowsTransparency="True"
         Background="Transparent"
-        ShowInTaskbar="False"
+        ShowInTaskbar="True"
         Topmost="True"
         SourceInitialized="Window_SourceInitialized"
         LocationChanged="Window_LocationChanged"
