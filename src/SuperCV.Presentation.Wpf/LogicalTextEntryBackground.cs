@@ -9,8 +9,8 @@ namespace SuperCV;
 /// </summary>
 public sealed class LogicalTextEntryBackground : FrameworkElement
 {
-    private const double LogicalWidth = 268;
-    private const double LogicalHeight = 98;
+    private const double LogicalWidth = 270;
+    private const double LogicalHeight = 100;
     private const double CornerRadius = 14;
 
     public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(

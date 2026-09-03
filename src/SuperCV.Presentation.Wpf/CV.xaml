@@ -785,17 +785,13 @@ HorizontalOffset="130"
                             </Style>
                         </Border.Style>
                     <Grid RenderOptions.ClearTypeHint="Enabled">
-                        <!-- Text-only cards receive a shared artwork layer.  It deliberately sits
-                             above the normal surface but below all text and controls, so the
-                             existing hover, border, and image-entry behavior stay intact. -->
+
                         <Border x:Name="TextEntryBackgroundSurface"
-                                Margin="0,0,-1,0"
+                                Margin="-1"
                                 CornerRadius="14"
                                 ClipToBounds="True"
                                 IsHitTestVisible="False">
-                            <!-- Keep one 268 × 98 logical canvas, then reveal its right-hand
-                                 portion when the left action rail is visible.  This is the same
-                                 coordinate system shown by the large and small dashed previews. -->
+  
                             <local:LogicalTextEntryBackground
                                 ImageSource="{Binding BackgroundImageSource, Source={x:Static local:TextEntryBackgroundAppearanceState.Current}}"
                                 ImageOpacity="{Binding BackgroundOpacity, Source={x:Static local:TextEntryBackgroundAppearanceState.Current}}"
