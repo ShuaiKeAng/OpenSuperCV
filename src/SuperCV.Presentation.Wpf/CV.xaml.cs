@@ -46,7 +46,7 @@ namespace SuperCV
         }
 
         private static readonly TimeSpan VerticalExitAnimationDuration =
-            TimeSpan.FromMilliseconds(420);
+            TimeSpan.FromMilliseconds(360);
         private static readonly TimeSpan ExitAnimationClosePadding =
             TimeSpan.FromMilliseconds(20);
         private static readonly TimeSpan ContentPressAnimationDuration =
@@ -114,6 +114,7 @@ namespace SuperCV
         private bool _followFrameAttached;
         private bool _isSuspendedForReuse;
         private bool _closeToReusablePool;
+        private bool _offScreenPoolReturnCheckAttached;
         private bool _reusableSubscriptionsDetached;
         private bool _hasMotionPosition;
         private double _motionLeft;
@@ -289,6 +290,7 @@ namespace SuperCV
 
             CVListControl.RegisterReusableWindowTransition(this);
             StartCloseTimer(closeDelay);
+            AttachOffScreenPoolReturnCheck(direction);
             return true;
         }
 
@@ -549,6 +551,49 @@ namespace SuperCV
             _closeTimer.Start();
         }
 
+        private void AttachOffScreenPoolReturnCheck(AnimationDirection direction)
+        {
+            if (direction is not (AnimationDirection.UP or AnimationDirection.Down) ||
+                _offScreenPoolReturnCheckAttached)
+            {
+                return;
+            }
+
+            _offScreenPoolReturnCheckAttached = true;
+            CompositionTarget.Rendering += OnExitTransitionRendering;
+        }
+
+        private void OnExitTransitionRendering(object? sender, EventArgs e)
+        {
+            if (!_closeToReusablePool || _isClosed)
+            {
+                DetachOffScreenPoolReturnCheck();
+                return;
+            }
+
+            // Do not reclaim a window merely because it left the owner monitor: a vertically
+            // adjacent monitor could still be showing it. Reclaim only when its native bounds
+            // no longer intersect the full virtual desktop.
+            if (!HasCompletelyLeftVirtualDesktop())
+            {
+                return;
+            }
+
+            StopCloseTimer();
+            FinishCloseToReusablePool();
+        }
+
+        private void DetachOffScreenPoolReturnCheck()
+        {
+            if (!_offScreenPoolReturnCheckAttached)
+            {
+                return;
+            }
+
+            CompositionTarget.Rendering -= OnExitTransitionRendering;
+            _offScreenPoolReturnCheckAttached = false;
+        }
+
         private void CloseTimer_Tick(object? sender, EventArgs e)
         {
             StopCloseTimer();
@@ -572,6 +617,7 @@ namespace SuperCV
             }
 
             StopCloseTimer();
+            DetachOffScreenPoolReturnCheck();
             CVListControl.UnregisterReusableWindowTransition(this);
             _closeToReusablePool = false;
             CloseUI(AnimationDirection.None);
@@ -579,6 +625,7 @@ namespace SuperCV
 
         private void FinishCloseToReusablePool(bool returnToPool = true)
         {
+            DetachOffScreenPoolReturnCheck();
             BeginAnimation(Window.LeftProperty, null);
             BeginAnimation(Window.TopProperty, null);
             BeginAnimation(UIElement.OpacityProperty, null);
@@ -694,6 +741,7 @@ namespace SuperCV
             StopColorPopupCloseTimer();
             CleanupSubscriptions();
             StopCloseTimer();
+            DetachOffScreenPoolReturnCheck();
             _imageLoadVersion++;
             _imageSource = null;
         }
@@ -1501,6 +1549,14 @@ namespace SuperCV
         [DllImport("user32.dll")]
         private static extern bool GetWindowRect(IntPtr hWnd, out NativeRect rect);
 
+        private const int SmXVirtualScreen = 76;
+        private const int SmYVirtualScreen = 77;
+        private const int SmCxVirtualScreen = 78;
+        private const int SmCyVirtualScreen = 79;
+
+        [DllImport("user32.dll")]
+        private static extern int GetSystemMetrics(int index);
+
         [DllImport("user32.dll", EntryPoint = "GetWindowLongPtrW", SetLastError = true)]
         private static extern nint GetWindowLongPtr(nint windowHandle, int index);
 
@@ -1534,6 +1590,28 @@ namespace SuperCV
         private IntPtr _hwnd;
         private int? _lastPhysicalX;
         private int? _lastPhysicalY;
+
+        private bool HasCompletelyLeftVirtualDesktop()
+        {
+            if (_hwnd == IntPtr.Zero)
+            {
+                _hwnd = new WindowInteropHelper(this).Handle;
+            }
+
+            if (_hwnd == IntPtr.Zero || !GetWindowRect(_hwnd, out NativeRect bounds))
+            {
+                return false;
+            }
+
+            int virtualLeft = GetSystemMetrics(SmXVirtualScreen);
+            int virtualTop = GetSystemMetrics(SmYVirtualScreen);
+            int virtualRight = virtualLeft + GetSystemMetrics(SmCxVirtualScreen);
+            int virtualBottom = virtualTop + GetSystemMetrics(SmCyVirtualScreen);
+            return bounds.Right <= virtualLeft ||
+                   bounds.Left >= virtualRight ||
+                   bounds.Bottom <= virtualTop ||
+                   bounds.Top >= virtualBottom;
+        }
 
         private void UpdateWindowPosition(double logicalX, double logicalY)
         {

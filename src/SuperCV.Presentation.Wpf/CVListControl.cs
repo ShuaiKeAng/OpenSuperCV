@@ -180,7 +180,7 @@ public static class CVListControl
         }
     }
 
-    private static int ReusableWindowWarmReserve => Math.Min(2, _MaxWindows);
+    private static int ReusableWindowWarmReserve => Math.Min(4, _MaxWindows);
 
     private static int ReusableWindowCapacity =>
         Math.Max(ReusableWindowWarmReserve * 2, _MaxWindows + 2);
