@@ -847,7 +847,7 @@ HorizontalOffset="130"
                             
 
                         </Grid>
-                        <TextBlock x:Name="CVTextBlock" Grid.Row="0" Margin="8,4,8,-2" Text="{Binding DisplayCVContent, Mode=OneWay}" FontSize="{Binding TextSize, Mode=OneWay}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.Text.Secondary}" Visibility="{Binding TextContentVisibility}" MaxHeight="80" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="CVTextBlock" Grid.Row="0" Margin="8,3,8,-3" Text="{Binding DisplayCVContent, Mode=OneWay}" FontSize="{Binding TextSize, Mode=OneWay}" TextWrapping="Wrap" Foreground="{DynamicResource Brush.Text.Secondary}" Visibility="{Binding TextContentVisibility}" MaxHeight="85" TextTrimming="CharacterEllipsis" />
 
                         <Grid Grid.Row="1"
                               Margin="8,1,8,2"
