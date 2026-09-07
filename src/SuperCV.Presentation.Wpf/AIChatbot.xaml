@@ -631,7 +631,7 @@ Opacity="0.3" />
                              AcceptsReturn="True"
                              TextWrapping="Wrap"
                              MaxHeight="180"
-                             KeyDown="InputTextBox_KeyDown"
+                             PreviewKeyDown="InputTextBox_PreviewKeyDown"
                              VerticalScrollBarVisibility="Hidden"/>
 
 
@@ -706,7 +706,7 @@ Opacity="0.3" />
         AutomationProperties.Name="发送消息或终止回答">
 
                             <Button.ToolTip>
-                                <TextBlock Text="发送消息（Enter）">
+                                <TextBlock Text="发送消息（Enter；Shift+Enter 换行）">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Style.Triggers>

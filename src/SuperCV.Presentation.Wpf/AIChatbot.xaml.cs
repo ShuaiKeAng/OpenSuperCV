@@ -725,11 +725,11 @@ namespace SuperCV
             _ = SendUserMessageAsync();
         }
 
-        private void InputTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void InputTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
+            // Handle Enter before the multiline TextBox turns it into a line break.
             if (e.Key == Key.Enter &&
-                !Keyboard.IsKeyDown(Key.LeftShift) &&
-                !Keyboard.IsKeyDown(Key.RightShift))
+                !e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift))
             {
                 e.Handled = true;
                 if (!IsBusy)

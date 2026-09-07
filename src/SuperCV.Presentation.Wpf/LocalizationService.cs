@@ -111,7 +111,7 @@ public sealed class LocalizationService : INotifyPropertyChanged, IDisposable
         ["可使用左右方向键在各档位之间切换"] = "Use Left/Right to switch between levels", ["思考深度"] = "Reasoning depth",
         ["对话长度达到阈值后会自动压缩"] = "Long conversations will be condensed", ["思考过程"] = "Reasoning activity",
         ["编辑问题"] = "Edit question", ["编辑这条回复对应的问题"] = "Edit the question for this reply", ["重新生成"] = "Regenerate",
-        ["发送问题（Enter）"] = "Send question (Enter)", ["发送消息（Enter）"] = "Send message (Enter)",
+        ["发送问题（Enter）"] = "Send question (Enter)", ["发送消息（Enter；Shift+Enter 换行）"] = "Send message (Enter; Shift+Enter for a new line)",
         ["发送消息或终止回答"] = "Send message or stop response", ["输入问题"] = "Enter question", ["输入消息..."] = "Enter message…",
         ["直接问AI"] = "Ask AI", ["模糊搜索"] = "Fuzzy search", ["请求次数"] = "Requests", ["近七天TOKEN 用量信息"] = "Token use in the last seven days",
         ["查找历史条目"] = "Search history", ["历史记录起始日期"] = "History start date", ["历史记录截止日期"] = "History end date",
