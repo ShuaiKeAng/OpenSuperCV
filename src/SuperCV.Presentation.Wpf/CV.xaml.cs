@@ -102,6 +102,7 @@ namespace SuperCV
         private int _imagePixelHeight;
         private int _imageLoadVersion;
         private int _previewImageLoadVersion;
+        private bool _contentInitialized;
         private int _RealIndex;
         private int _SelectedIndex;
         private string _question = string.Empty;
@@ -1376,9 +1377,28 @@ namespace SuperCV
 
         internal void UpdateContent(string text, string? imageLink)
         {
+            string normalizedText = text ?? string.Empty;
+            string? normalizedImageLink = string.IsNullOrWhiteSpace(imageLink)
+                ? null
+                : imageLink;
+
+            // History synchronization also visits entries that remain visible. Keeping the
+            // already-bound source for an unchanged image prevents the card from briefly
+            // clearing while an unnecessary decode/cache lookup completes.
+            if (_contentInitialized &&
+                string.Equals(_CVContent, normalizedText, StringComparison.Ordinal) &&
+                string.Equals(
+                    _imageLink,
+                    normalizedImageLink,
+                    StringComparison.OrdinalIgnoreCase) &&
+                (!IsImage || _imageSource is not null))
+            {
+                return;
+            }
+
             int loadVersion = ++_imageLoadVersion;
             ++_previewImageLoadVersion;
-            _imageLink = string.IsNullOrWhiteSpace(imageLink) ? null : imageLink;
+            _imageLink = normalizedImageLink;
             _imageSource = null;
             _previewImageSource = null;
             _imagePixelWidth = 0;
@@ -1398,7 +1418,7 @@ namespace SuperCV
                 }
             }
 
-            CVContent = text;
+            CVContent = normalizedText;
             OnPropertyChanged(nameof(IsImage));
             OnPropertyChanged(nameof(TextContentVisibility));
             OnPropertyChanged(nameof(ImageContentVisibility));
@@ -1424,6 +1444,8 @@ namespace SuperCV
                     currentImage,
                     loadVersion);
             }
+
+            _contentInitialized = true;
         }
 
         private async Task LoadImageAsync(string imageLink, int loadVersion)

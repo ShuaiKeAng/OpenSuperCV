@@ -119,6 +119,13 @@ namespace SuperCV
                 throw new InvalidOperationException("Cannot apply another history entry to this view model.");
             }
 
+            // Adding or scrolling another clipboard entry republishes the existing immutable
+            // entries in the snapshot. They do not need a view-model or visual refresh.
+            if (ReferenceEquals(_entry, entry))
+            {
+                return;
+            }
+
             SetEntry(entry);
             if (ItemUI is not null)
             {
