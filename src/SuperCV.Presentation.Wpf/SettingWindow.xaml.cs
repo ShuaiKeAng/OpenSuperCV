@@ -320,6 +320,8 @@ namespace SuperCV
             {
                 _suppressAutoApply = true;
                 await ViewModel.ResetToDefaultAsync();
+                await _runtime.RestoreDefaultInstructionPresetsAsync();
+                CustomInstructionsManager.RefreshForLanguageChange();
                 await _runtime.SetImageSupportEnabledAsync(true);
             }
             catch (Exception exception)

@@ -128,6 +128,13 @@ public sealed record AppSettings
 
     public int InstructionPresetVersion { get; init; }
 
+    /// <summary>
+    /// Built-in instruction IDs explicitly removed by the user.  These are retained separately
+    /// from the instruction documents so a later preset upgrade cannot mistake a deletion for a
+    /// missing first-run item and recreate it.
+    /// </summary>
+    public Guid[] DeletedInstructionPresetIds { get; init; } = [];
+
     public AppSettings Normalize()
     {
         AiProvider provider = Enum.IsDefined(AiProvider) ? AiProvider : AiProvider.DeepSeek;
@@ -207,6 +214,11 @@ public sealed record AppSettings
             BasePrompt = BasePrompt ?? string.Empty,
             AiChatPrompt = AiChatPrompt ?? string.Empty,
             InstructionPresetVersion = Math.Max(0, InstructionPresetVersion),
+            DeletedInstructionPresetIds = (DeletedInstructionPresetIds ?? [])
+                .Where(static id => id != Guid.Empty)
+                .Distinct()
+                .Order()
+                .ToArray(),
         };
     }
 

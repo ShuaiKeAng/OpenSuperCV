@@ -34,6 +34,12 @@ public static class FirstUseDefaults
     public static readonly Guid ExplainInstructionId =
         Guid.Parse("344cbd7f-9f35-4918-a169-0d463900c664");
 
+    public static bool IsPresetInstructionId(Guid id) =>
+        id == TranslationInstructionId ||
+        id == SummaryInstructionId ||
+        id == PolishInstructionId ||
+        id == ExplainInstructionId;
+
     public static ClipboardPayload CreateWelcomePayload(string? language = null) =>
         new(new Dictionary<ClipboardFormat, string>
         {

@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Diagnostics;
 using System.IO;
+using SuperCV.Application;
 using DomainInstruction = global::SuperCV.Domain.Instructions.CustomInstruction;
 
 namespace SuperCV;
@@ -369,8 +370,25 @@ public static class CustomInstructionsManager
             return;
         }
 
-        if (await GetRuntime().Instructions.RemoveAsync(instructionId).ConfigureAwait(true))
+        AppRuntime runtime = GetRuntime();
+        if (FirstUseDefaults.IsPresetInstructionId(instructionId))
         {
+            // Persist the user's deletion before removing the document.  The document catalog is
+            // intentionally allowed to be empty, so its absence alone cannot represent this choice.
+            await runtime.Settings.UpdateAndPersistAsync(
+                    current => current.DeletedInstructionPresetIds.Contains(instructionId)
+                        ? current
+                        : current with
+                        {
+                            DeletedInstructionPresetIds =
+                            [.. current.DeletedInstructionPresetIds, instructionId],
+                        })
+                .ConfigureAwait(true);
+        }
+
+        if (await runtime.Instructions.RemoveAsync(instructionId).ConfigureAwait(true))
+        {
+            await runtime.Instructions.FlushAsync().ConfigureAwait(true);
             StopDocumentMonitor(instructionId);
             RefreshInstructions();
             RenderAllSessions();

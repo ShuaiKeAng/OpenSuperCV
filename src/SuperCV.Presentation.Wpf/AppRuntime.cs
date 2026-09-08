@@ -266,8 +266,15 @@ internal sealed class AppRuntime : IAsyncDisposable
                 FirstUseDefaults.CreatePresetInstructions(
                     DateTimeOffset.UtcNow,
                     settings.Snapshot.Language);
+            var deletedPresetIds = settings.Snapshot.DeletedInstructionPresetIds
+                .ToHashSet();
             foreach (CustomInstruction preset in presets)
             {
+                if (deletedPresetIds.Contains(preset.Id))
+                {
+                    continue;
+                }
+
                 if (instructions.Snapshot.Any(
                         instruction =>
                             instruction.Id == preset.Id ||
@@ -306,6 +313,44 @@ internal sealed class AppRuntime : IAsyncDisposable
             // The workspace catalog remains the durable first-use marker and is committed last.
             await workspaces.FlushAsync(cancellationToken).ConfigureAwait(false);
         }
+    }
+
+    /// <summary>
+    /// Restores the current localized built-in instruction set as part of an explicit settings
+    /// reset. Unlike startup seeding, this intentionally ignores prior user removals.
+    /// </summary>
+    internal async ValueTask RestoreDefaultInstructionPresetsAsync(
+        CancellationToken cancellationToken = default)
+    {
+        await Settings.UpdateAndPersistAsync(
+                current => current.DeletedInstructionPresetIds.Length == 0
+                    ? current
+                    : current with { DeletedInstructionPresetIds = [] },
+                cancellationToken)
+            .ConfigureAwait(false);
+
+        IReadOnlyList<CustomInstruction> presets =
+            FirstUseDefaults.CreatePresetInstructions(DateTimeOffset.UtcNow, Settings.Snapshot.Language);
+        foreach (CustomInstruction preset in presets)
+        {
+            CustomInstruction? existing = Instructions.Snapshot
+                .FirstOrDefault(instruction => instruction.Id == preset.Id);
+            if (existing is null)
+            {
+                _ = await Instructions.AddAsync(preset, cancellationToken).ConfigureAwait(false);
+                continue;
+            }
+
+            if (existing.Label != preset.Label || existing.Prompt != preset.Prompt)
+            {
+                _ = await Instructions.UpdateAsync(
+                        preset with { CreatedAtUtc = existing.CreatedAtUtc },
+                        cancellationToken)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        await Instructions.FlushAsync(cancellationToken).ConfigureAwait(false);
     }
 
     internal async ValueTask FlushForExportAsync(CancellationToken cancellationToken = default)
