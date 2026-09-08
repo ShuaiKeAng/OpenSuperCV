@@ -1,193 +1,206 @@
 <div align="center">
   <img src="src/SuperCV.Presentation.Wpf/Assets/SuperCV.Remastered.png" width="108" alt="SuperCV 图标" />
   <h1>SuperCV</h1>
-  <p><strong>AI 驱动的 Windows 智能剪贴板</strong></p>
-  <p>把每一次复制，变成随时可检索、可整理、可直接复用的工作上下文。</p>
+  <p><strong>优雅简洁的伴随式生产力工具</strong></p>
+  <p>AI 驱动的智能剪贴板，让散落在应用之间的内容，成为随时可检索、可编辑的AI上下文。</p>
   <p>
     <img src="https://img.shields.io/badge/平台-Windows%2010%20%2F%2011-0078D4?style=flat-square" alt="Windows 10 / 11" />
     <img src="https://img.shields.io/badge/界面-中文%20%2F%20English-4C8BF5?style=flat-square" alt="中文与 English" />
-    <img src="https://img.shields.io/badge/能力-剪贴板%20%2B%20AI-7C3AED?style=flat-square" alt="剪贴板与 AI" />
+    <img src="https://img.shields.io/badge/AI-Agent-7C3AED?style=flat-square" alt="AI Agent" />
+  </p>
+  <p>
+    <strong><a href="https://github.com/ShuaiKeAng/OpenSuperCV/releases">下载最新版</a></strong>
+    · <a href="docs/SuperCV_使用说明书.md">中文使用说明</a>
+    · <a href="docs/SuperCV_User_Guide.md">English Guide</a>
   </p>
 </div>
 
-> 复制的内容不该在下一次复制后消失。SuperCV 将文字和图片剪贴板汇集到轻量的桌面工作区：需要时一键粘贴，常用内容固定收藏，旧内容长期检索；需要理解、改写或归纳时，再交给 AI。
+<p align="center">
+  <img src="docs/media/gifs/07-entry-shadow-light.gif" height="400" alt="SuperCV 浅色主题卡片阴影动画" />
+  <img src="docs/media/gifs/05-scroll-pin-delete.gif" height="400" alt="SuperCV 列表滚动、置顶与删除动画" />
+  <img src="docs/media/gifs/03-floating-window-expand.gif" height="400" alt="SuperCV 浮窗动画与窗口展开" />
+</p>
 
-## 一眼了解
+## 让剪贴板从“临时中转站”变成工作台
 
-| 你正在做什么 | SuperCV 如何帮你 |
+SuperCV 自动收集文字与图片，把分散在网页、文档、聊天和代码编辑器中的片段汇集到一个轻量桌面工作区。你可以一眼浏览最近内容，用搜索、书签、工作区快速定位，再通过单击、拖放或快捷键粘贴回正在使用的应用。
+
+需要进一步处理时，AI 可以直接翻译、总结、润色单条内容，也可以在明确的权限范围内利用Agent 能力生成、理解、整理和编辑剪贴板内容。
+
+<p align="center">
+  <img src="docs/media/screenshots/01-main-window.png" width="36%" alt="SuperCV 主界面" />
+</p>
+
+## 从复制到复用，一气呵成
+
+1. **照常复制**：在任意应用复制文字或图片可以自动收录内容。
+2. **快速定位**：滚轮滚动最近卡片，输入关键词搜索，或通过书签、颜色和工作区缩小范围。
+3. **立即调用**：单击条目、拖动内容，或使用全局快捷键，把它粘贴到目标应用。
+4. **按需处理**：编辑内容，或交给 AI 翻译、总结、润色和归纳等，再继续使用。
+
+<p align="center">
+  <img src="docs/media/gifs/02-click-and-drag-paste.gif" height="260" alt="单击条目并粘贴" />
+  <img src="docs/media/gifs/10-drag-paste.gif" height="260" alt="拖动条目到目标应用" />
+</p>
+
+## 四个核心体验
+
+### 找得回，也找得快
+
+SuperCV 不只保存“最近复制”，还为不同使用频率的内容提供不同归宿。
+
+- **工作区**：按项目、客户、课程或临时任务隔离内容，每个工作区拥有独立的普通条目与长期历史。
+- **书签**：保存电话、地址、命令、固定回复等高频内容。
+- **置顶**：固定当前重点到列表顶部，随时使用。
+- **颜色标记**：用颜色标记类别或优先级，让重要内容始终醒目。
+- **关键字检索**：在搜索框关键词搜索负责精确定位。
+- **模糊搜索**：在搜索框输入 `/fs 你的描述`，可通过 AI 发现语义相关内容。
+- **文字图片筛选**：在搜索框按左右方向键可以快速筛选出文字或图片。
+
+<p align="center">
+    <img src="docs/media/gifs/05-scroll-pin-delete.gif" height="270" alt="列表滚动、置顶与删除" />
+  <img src="docs/media/gifs/04-switch-workspaces.gif" height="270" alt="切换工作区" />
+  <img src="docs/media/gifs/06-fuzzy-search.gif" height="270" alt="AI 语义搜索" />
+  <img src="docs/media/gifs/11-filter-text-and-images.gif" height="270" alt="筛选文字与图片条目" />
+
+</p>
+
+<p align="center">
+  <img src="docs/media/screenshots/05-pin-and-color-tags.png" height="360" alt="置顶与颜色标记" />
+  <img src="docs/media/screenshots/09-search-filter.png" height="360" alt="关键词搜索筛选" />
+</p>
+
+### 各种内容能顺手处理
+
+从代码片段、富文本到参考图片，SuperCV 用统一的卡片视图承载不同内容，同时保留各自合适的操作方式。
+
+- 收集 Unicode 文本、传统文本、HTML、RTF 与图片条目。
+- 右键直接编辑文字，可以新建空白内容，记录备忘录、临时信息等，并可撤销最近修改。
+- 支持查找替换，将随手复制的内容在剪贴板内直接替换字符串。
+- 预览图片、查看原图，或将图片预览置顶在桌面前方。
+- 自由将文字导出为 TXT／RTF，将图片导出为 PNG、JPEG、BMP 或 TIFF。
+
+<p align="center">
+
+  <img src="docs/media/screenshots/03-edit-text-entry.png" height="360" alt="编辑文字条目" />
+  <img src="docs/media/screenshots/04-entry-more-actions.png" height="360" alt="条目更多操作" />
+<img src="docs/media/screenshots/07-image-preview.png" height="360" alt="图片原图预览" />
+</p>
+
+<p align="center">
+
+  
+  <img src="docs/media/screenshots/08-pinned-image-preview.png" height="270" alt="置顶图片预览窗口" />
+  <img src="docs/media/gifs/09-pinned-image-preview.gif" height="270" alt="图片条目的置顶窗口预览" />
+</p>
+
+
+
+### AI 就在内容旁边
+
+它最强的功能AI————可以完全关闭！
+
+连接各大大模型厂商提供的可用的模型服务后，无需把内容搬到另一个应用，就能完成从单条加工到多条整理的工作。
+
+**通过自定义提示词处理文本**
+
+在文字条目上点击指令即可翻译、摘要、润色、通俗解释，或运行自定义指令，例如“改成礼貌简短的客户回复”“整理为待办清单”。
+
+**Agent 辅助处理**
+
+输入 `/ai 问题` 即可唤起面向当前工作区的 Agent。它会先主动调用工具查看相关条目内容，可以执行筛选、编辑、删除、新建等任务，用于归纳资料、定位信息或协助整理。
+
+- 提供**只读、审核批准、完全访问**三档权限。
+- 编辑、新建、删除、置顶或标记等操作，可在“审核批准”模式下逐次确认。
+- 执行过程可以展开查看，资料读取与修改更透明。
+- 可按需联网检索公开信息；本地内容的操作权限不会因此改变。
+
+在每条内容上的AI入口回答时，Agent会主动读取该条目内容，此时Agent仍然可以访问全部条目信息。
+
+<p align="center">
+  <img src="docs/media/screenshots/10-entry-ai-actions.png" height="380" alt="条目 AI 文本处理" />
+  <img src="docs/media/gifs/13-ai-text-transform.gif" height="380" alt="AI 指令转换文字内容" />
+</p>
+
+<p align="center">
+  <img src="docs/media/screenshots/11-workspace-ai-chat.png" height="340" alt="工作区 AI Agent 对话" />
+  <img src="docs/media/screenshots/12-entry-ai-chat.png" height="340" alt="从条目发起 AI 对话" />
+</p>
+
+### 轻量待命，融入桌面
+
+SuperCV 围绕“快速扫一眼，点一下就用”设计。浮动窗口保持轻巧，复杂管理只在需要时展开。
+
+<p align="center">
+  <img src="docs/media/gifs/03-floating-window-expand.gif" height="360" alt="SuperCV 浮窗与主窗口展开动画" />
+  <img src="docs/media/gifs/01-sidebar-toggle.gif" height="360" alt="收起与展开条目侧边操作按钮" />
+
+</p>
+
+<p align="center">
+  <img src="docs/media/gifs/12-window-follow.gif" height="250" alt="SuperCV 窗口跟随动画" />
+</p>
+
+- **全局快捷键**：按显示序号粘贴近期条目，或连续向前／向后取用内容；快捷键可自行调整。
+- **熟悉的入口**：可选择接管 `Win + V`，让新的工作流延续原有习惯。
+- **后台驻留**：关闭窗口后驻留系统托盘，持续记录；也可随时暂停列表更新或直接退出。
+- **个性化外观**：深色／浅色模式与多套主题可选，还可调整字号、不透明度、动画和窗口跟随速度。
+- **中英文界面**：中文与 English 即时切换，首次启动提供欢迎引导。
+
+<p align="center">
+  <img src="docs/media/gifs/07-entry-shadow-light.gif" height="380" alt="浅色主题下的卡片层次与阴影" />
+  <img src="docs/media/gifs/08-entry-shadow-dark.gif" height="380" alt="深色主题下的卡片层次与阴影" />
+</p>
+
+<p align="center"><strong>深色主题</strong></p>
+
+<p align="center">
+  <img src="docs/media/screenshots/themes/theme-02.png" height="220" alt="终端主题：深色模式" />
+  <img src="docs/media/screenshots/themes/theme-03.png" height="220" alt="余烬主题：深色模式" />
+  <img src="docs/media/screenshots/themes/theme-06.png" height="220" alt="海洋主题：深色模式" />
+  <img src="docs/media/screenshots/themes/theme-10.png" height="220" alt="李子主题：深色模式" />
+  <img src="docs/media/screenshots/themes/theme-12.png" height="220" alt="单色主题：深色模式" />
+</p>
+
+<p align="center"><strong>浅色主题</strong></p>
+
+<p align="center">
+  <img src="docs/media/screenshots/themes/theme-01.png" height="220" alt="终端主题：浅色模式" />
+  <img src="docs/media/screenshots/themes/theme-04.png" height="220" alt="余烬主题：浅色模式" />
+  <img src="docs/media/screenshots/themes/theme-05.png" height="220" alt="海洋主题：浅色模式" />
+  <img src="docs/media/screenshots/themes/theme-09.png" height="220" alt="李子主题：浅色模式" />
+  <img src="docs/media/screenshots/themes/theme-11.png" height="220" alt="单色主题：浅色模式" />
+</p>
+
+## 适合每一种高频复制场景
+
+| 场景 | 你可以这样使用 SuperCV |
 | --- | --- |
-| 在网页、文档、聊天和代码之间来回复制 | 自动收集文字与图片，按时间呈现在紧凑卡片中 |
-| 反复使用签名、地址、命令、回复模板 | 用书签、置顶和颜色标记让常用内容始终触手可及 |
-| 同时处理多个客户、项目或资料主题 | 用独立工作区分隔内容与长期历史，避免互相干扰 |
-| 想找回数天前的一段话或一张图 | 当前列表即时搜索，长期历史支持关键词和日期范围筛选 |
-| 不想离开正在工作的应用 | 通过全局快捷键按编号粘贴，或连续向前／向后粘贴 |
-| 需要翻译、总结、润色或批量整理剪贴板 | 在条目上直接调用 AI，或让 Agent 在授权范围内协助处理 |
+| 写作与办公 | 收集资料、保存模板、润色文案，连续粘贴多段内容 |
+| 开发与运维 | 管理代码片段、命令和配置，让常用内容固定在手边 |
+| 学习与阅读 | 汇集重点段落，通过搜索与 AI 快速归纳回顾 |
 
-## 界面预览
+## 效率之外，边界同样清晰
 
-> **截图占位 A｜主界面（优先级：最高）**<br>
-> 建议文件：`docs/images/01-main-window-dark.png`<br>
-> 展示深色主题下的主窗口：顶部搜索、工作区、书签区域、4–6 张不同状态的文字／图片条目卡片、底部操作栏。请使用脱敏的真实感内容。
+- **AI 完全可选**：不启用 AI，也可以使用完整的剪贴板收集、整理、检索与复用能力。
+- **权限由你决定**：Agent 的读取与修改范围可控，默认可使用“审核批准”模式把关写入操作。
+- **数据便于迁移**：设置、工作区、历史、书签、自定义指令和图片缓存可导出为迁移文件；导入前会检查内容，并为原数据保留副本。
+- **敏感内容请谨慎**：调用 AI 时，所选文字或 Agent 读取的内容会发送给你配置的模型服务。请勿向不可信服务提供密码、令牌、隐私或商业机密。
 
-<!-- 将下行取消注释并放入对应文件后即可展示：
-![SuperCV 主界面：工作区、书签与剪贴板卡片](docs/images/01-main-window-dark.png)
--->
+## 现在开始
 
-SuperCV 是围绕“快速扫一眼、点一下就用”的浮动窗口设计的。列表保留内容预览、记录时间、序号、置顶和颜色状态；不必打开复杂管理器，也能快速判断要用哪一条。
+SuperCV 适用于 **Windows 10 / Windows 11**。
 
-## 从复制到复用，只需几秒
-
-1. **照常复制**：在任何应用复制文字；开启图片支持后，图片也会进入当前工作区。
-2. **快速定位**：查看最新卡片、输入关键词搜索，或用书签／工作区缩小范围。
-3. **立即带回原处**：单击条目，或按设置好的全局快捷键，把内容粘贴回刚才的应用。
-
-> **GIF 占位 1｜复制到一键粘贴（优先级：最高）**<br>
-> 建议文件：`docs/gifs/01-copy-search-paste.gif`<br>
-> 录制 8–12 秒：浏览器／编辑器复制一段文字 → SuperCV 出现新卡片 → 单击或快捷键粘贴回原应用。这个 GIF 最能说明产品的核心价值。
-
-<!-- ![复制、定位、一键粘贴](docs/gifs/01-copy-search-paste.gif) -->
-
-## 不只是历史记录：完整的剪贴板工作台
-
-### 收集、编辑与带走
-
-- **文字和图片一起收集**：支持 Unicode 文本、传统文本、HTML、RTF 与图片条目。图片可预览、查看原图并用系统默认程序打开；图片不会被当作文字误处理。
-- **直接在卡片上处理**：编辑文字、新建空白条目、转为纯文本、撤销最近修改，减少在多个窗口间切换。
-- **保留原来的使用方式**：点击条目即可回到此前应用粘贴；也可拖动内容到支持拖放的目标应用。
-- **需要离线留存时再导出**：文字可导出为 TXT／RTF，图片可导出为 PNG、JPEG、BMP 或 TIFF。
-- **状态一目了然**：每张卡片呈现内容预览、长度或图片信息、记录时间、显示序号、置顶状态与颜色标记。
-
-> **截图占位 B｜条目操作与图片预览**<br>
-> 建议文件：`docs/images/02-item-actions-and-image-preview.png`<br>
-> 左侧展示一张展开操作菜单的文字卡片（编辑、置顶、书签、颜色、导出、AI）；右侧展示图片条目及大图预览。可拼成一张双栏截图。
-
-<!-- ![条目操作菜单与图片预览](docs/images/02-item-actions-and-image-preview.png) -->
-
-### 让内容有秩序，而非越存越乱
-
-- **工作区**：按项目、客户、学习主题或临时任务隔离剪贴板内容。工作区可新建、切换、重命名和删除；每个工作区拥有独立的普通条目与长期历史。
-- **书签**：把邮件签名、常用地址、命令片段、固定回复等内容从易被淘汰的临时记录中提出来。书签跨工作区可用，并支持编辑、删除和拖动排序。
-- **置顶与颜色标记**：把正在使用的素材固定在前面，用红、橙、紫、绿、蓝等颜色快速分类或标记优先级；置顶项不会因普通条目上限被自动淘汰。
-- **重复内容治理**：可选择重复复制时仅保留最新条目，让列表保持干净；普通条目数量也可按个人习惯控制。
-- **长期历史**：开启后可长期保存独立记录，支持按关键词、日期范围检索、复制、删除与逐步加载。
-
-> **GIF 占位 2｜工作区、书签与检索**<br>
-> 建议文件：`docs/gifs/02-organize-and-find.gif`<br>
-> 录制 12–18 秒：切换两个工作区 → 将一条内容加入书签／置顶／加色 → 在“历史记录”中用关键词或日期找回旧内容。
-
-<!-- ![用工作区、书签和历史管理内容](docs/gifs/02-organize-and-find.gif) -->
-
-### 搜索与快捷键，把“找内容”变成肌肉记忆
-
-- **即时关键词搜索**：在主窗口输入文本并确认，即可筛选当前工作区中包含该文字的条目；清空搜索即可回到完整列表。
-- **语义搜索**：输入 `/fs 你的描述`，让 AI 从当前条目中找出含义相关的内容，而不只匹配字面关键词。
-- **按序号快速粘贴**：可通过 `Alt + Shift + 数字键` 粘贴对应编号的近期条目；可见条目也有单独快捷键。
-- **连续前后粘贴**：在同一输入位置继续取用较旧或较新的条目，适合连续填写表单、逐条引用资料。
-- **接管剪贴板入口**：可选由 SuperCV 接管 `Win + V`；快捷键均可在设置中调整，并可设置是否拦截原按键。
-- **后台待命**：关闭主窗口后可驻留系统托盘，继续记录或随时暂停列表更新；也可设置关闭即退出。
-
-> **截图占位 C｜搜索、快捷键与历史记录**<br>
-> 建议文件：`docs/images/03-search-shortcuts-history.png`<br>
-> 建议三联图：主界面搜索结果、快捷键设置页、长期历史的关键词／日期筛选页。截图中保留可读的中文标签。
-
-<!-- ![搜索、快捷键与长期历史](docs/images/03-search-shortcuts-history.png) -->
-
-## AI：先处理一条，再理解一组
-
-AI 是可选能力。配置可用的模型服务后，SuperCV 提供两个层次的辅助：
-
-### 条目级文本处理
-
-选中一条文字即可发起**翻译、摘要、润色、通俗解释**或自定义指令；确认结果后可替换当前内容，并可撤销。对于经常重复的操作，可以建立自己的指令，例如“改成礼貌但简短的客户回复”或“整理为待办清单”。图片条目不会显示文字 AI 处理入口。
-
-### Agent 对话：面向当前工作区的助手
-
-在主窗口输入 `/ai 问题`，或从单条目进入对话。Agent 会按任务需要列出、读取、定位和筛选当前工作区的文字条目，而不是一开始就把全部内容塞进对话；它适合归纳、查找、组织和处理多条资料。
-
-- **可见执行过程**：对话中可展开查看 Agent 的工具执行过程与最终回答，知道它做了哪些操作。
-- **三档访问权限**：只读、审核批准、完全访问。默认推荐“审核批准”，涉及编辑、新建、删除、置顶或标记时由你确认。
-- **可控的操作范围**：在授权条件下，Agent 可以读取和筛选条目，也可以编辑、新建、删除、定位条目以及设置置顶／颜色；图片不会被 Agent 读取像素内容。
-- **联网检索（按需）**：Agent 可为公开信息调用网页搜索；外部搜索结果不会改变它对本地数据的操作权限。
-- **上下文更节制**：Agent 先看条目概览，需要时才读取全文，减少无关内容进入对话。
-
-> **截图占位 D｜AI 文本处理与 Agent 权限**<br>
-> 建议文件：`docs/images/04-ai-actions-and-agent.png`<br>
-> 建议双栏：左侧为条目的 AI 操作／自定义指令面板；右侧为 Agent 对话窗口，展示权限下拉、执行过程折叠区和最终答复。API Key 必须遮挡。
-
-<!-- ![AI 文本处理与 Agent 对话](docs/images/04-ai-actions-and-agent.png) -->
-
-> **GIF 占位 3｜Agent 整理多条内容**<br>
-> 建议文件：`docs/gifs/03-ai-agent-workflow.gif`<br>
-> 录制 15–20 秒：输入 `/ai` 问题 → Agent 筛选／读取若干条目 → 显示执行过程 → 在“审核批准”模式下请求一次修改 → 展示结果。请用测试文本，避免泄露隐私或密钥。
-
-<!-- ![Agent 在审核批准模式下整理剪贴板](docs/gifs/03-ai-agent-workflow.gif) -->
-
-## 为你的桌面而生
-
-- **深色／浅色与多套配色**：提供默认、海洋、李子、余烬、极光、终端、单色等预设主题，并支持深浅模式；界面颜色随主题整体切换。
-- **显示节奏可调**：可调整同时显示的条目数量、剪贴板文字大小、窗口不透明度、动画强度及窗口跟随速度，让它融入不同屏幕和使用习惯。
-- **文字条目背景**：可为文字卡片配置半透明图片背景，并调整图片的透明度、缩放和位置，让常看的内容更有辨识度。
-- **中英文界面**：欢迎页和设置中可切换中文／English，切换即时生效。
-- **新手友好**：首次启动提供欢迎引导；设置集中管理常规、快捷键、历史、AI、主题、数据迁移和更新信息。
-
-> **截图占位 E｜主题与个性化设置**<br>
-> 建议文件：`docs/images/05-themes-and-personalization.png`<br>
-> 建议做三联图：深色主界面、浅色或“极光／终端”主题主界面、设置页的主题和显示选项。这样能直观传达产品质感与可定制性。
-
-<!-- ![多主题与个性化设置](docs/images/05-themes-and-personalization.png) -->
-
-> **GIF 占位 4｜主题切换与窗口体验（可选）**<br>
-> 建议文件：`docs/gifs/04-theme-switching.gif`<br>
-> 录制 6–10 秒：在设置中切换主题或深浅模式，再回到主窗口展示即时变化。此素材用于增强首页视觉吸引力，优先级低于前三个 GIF。
-
-<!-- ![切换主题后的 SuperCV](docs/gifs/04-theme-switching.gif) -->
-
-## 数据掌握在你手中
-
-- **可迁移**：可将设置、工作区、普通与长期历史、书签、自定义指令和图片缓存导出为单个迁移文件；导入前会检查内容，完成后可恢复既有使用环境。
-- **可回退**：导入新数据前会保留原数据副本，降低迁移失误的影响。
-- **注意 AI 数据边界**：使用 AI 时，所选文字或 Agent 读取到的内容会发送给你配置的模型服务。请不要把密码、令牌、个人隐私或商业机密交给不可信服务。
-- **日常建议**：重要内容请建立书签或导出；在共享设备上可暂停列表更新或退出应用。
-
-> **截图占位 F｜导出与迁移（可选）**<br>
-> 建议文件：`docs/images/06-data-export-and-migration.png`<br>
-> 展示“关于”页中的导出、导入、迁移入口即可；不要展示本机真实路径、备份文件名或任何敏感内容。
-
-<!-- ![数据导出与迁移](docs/images/06-data-export-and-migration.png) -->
-
-## 素材拍摄清单
-
-为方便后续补图，以下是 README 已预留的全部素材。建议统一使用 16:9 或接近的横向比例、深色主题作为主视觉，并使用不含个人信息的样例数据。
-
-| 优先级 | 文件名 | 类型 | 需要覆盖的 UI／动作 |
-| --- | --- | --- |
-| P0 | `docs/images/01-main-window-dark.png` | 截图 | 主窗口全貌：搜索、工作区、书签、文字和图片卡片、底栏 |
-| P0 | `docs/gifs/01-copy-search-paste.gif` | GIF | 外部应用复制 → 新条目出现 → 一键粘贴回原应用 |
-| P0 | `docs/gifs/02-organize-and-find.gif` | GIF | 工作区切换、书签／置顶／颜色、长期历史检索 |
-| P0 | `docs/images/04-ai-actions-and-agent.png` | 截图 | AI 文本处理、自定义指令、Agent 对话及权限 |
-| P0 | `docs/gifs/03-ai-agent-workflow.gif` | GIF | Agent 多条目工作流与审核确认 |
-| P1 | `docs/images/02-item-actions-and-image-preview.png` | 截图 | 条目操作菜单、图片卡片与大图预览 |
-| P1 | `docs/images/03-search-shortcuts-history.png` | 截图 | 普通搜索、快捷键设置、日期／关键词历史检索 |
-| P1 | `docs/images/05-themes-and-personalization.png` | 截图 | 深浅主题与显示个性化选项 |
-| P2 | `docs/images/06-data-export-and-migration.png` | 截图 | 数据导出、导入、迁移入口 |
-| P2 | `docs/gifs/04-theme-switching.gif` | GIF | 主题或深浅模式即时切换 |
-
-**拍摄建议**：GIF 控制在 6–20 秒、帧率 12–15 fps；首帧要能独立看懂，鼠标移动保持克制。截图建议宽度至少 1400 px，避免显示 API Key、真实剪贴板内容、用户目录、浏览器个人信息和系统通知。
-
-## 快速开始
-
-1. 在 [Releases](https://github.com/ShuaiKeAng/OpenSuperCV/releases) 下载并安装最新版本。
+1. 前往 [Releases](https://github.com/ShuaiKeAng/OpenSuperCV/releases) 下载并安装最新版本。
 2. 启动 SuperCV，保持“列表更新”开启。
-3. 在任意应用复制文字或图片，回到 SuperCV 即可看到新条目。
-4. 单击条目，或使用全局快捷键，将内容粘贴回原应用。
-5. 需要 AI 时，在“设置 → AI”启用服务并完成连接测试。
+3. 在任意应用复制文字或图片，新内容会自动出现在当前工作区。
+4. 单击条目或使用全局快捷键，将内容粘贴回原应用。
+5. 如需 AI，在“设置 → AI”中启用模型服务并完成连接测试。
 
-完整操作说明见 [中文使用说明书](docs/SuperCV_使用说明书.md)；英文界面说明见 [English User Guide](docs/SuperCV_User_Guide.md)。
+> 第一次使用？查看完整的 [中文使用说明书](docs/SuperCV_使用说明书.md) 或 [English User Guide](docs/SuperCV_User_Guide.md)。
 
 ## 反馈与参与
 
-如果你有功能建议、使用问题或发现异常，欢迎通过 [Issues](https://github.com/ShuaiKeAng/OpenSuperCV/issues) 交流。提交问题时，如能说明使用场景、复现步骤和预期行为，会更容易定位。
-
-## 许可
+如果你有功能建议、使用问题或发现异常，欢迎前往 [Issues](https://github.com/ShuaiKeAng/OpenSuperCV/issues) 交流。提交问题时，请尽量附上使用场景、复现步骤和预期行为。
 
 本项目采用仓库中的 [LICENSE](LICENSE.txt) 许可。
