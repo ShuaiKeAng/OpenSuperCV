@@ -1,3 +1,7 @@
+<p align="center">
+  <strong>简体中文</strong> · <a href="README.en.md">English</a>
+</p>
+
 <div align="center">
   <img src="src/SuperCV.Presentation.Wpf/Assets/SuperCV.Remastered.png" width="108" alt="SuperCV 图标" />
   <h1>SuperCV</h1>
