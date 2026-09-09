@@ -2,6 +2,25 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "0.9.5",
+      "zh": {
+        "title": "稳定性与体验",
+        "items": [
+          "• 优化剪贴板监听和图片条目加载，减少重复收录与无效读取。",
+          "• 改进浮窗动画、窗口置顶、搜索输入及历史删除体验。",
+          "• 完善数据迁移、安装语言选择、图片预览和预置指令管理。"
+        ]
+      },
+      "en": {
+        "title": "Stability and experience",
+        "items": [
+          "• Improved clipboard capture and image-item loading to reduce duplicate entries and unnecessary reads.",
+          "• Refined floating-window animation, always-on-top behavior, search input, and history deletion.",
+          "• Improved data migration, installer language selection, image preview, and built-in instruction management."
+        ]
+      }
+    },
+    {
       "version": "0.9.4",
       "zh": {
         "title": "当前版本",
