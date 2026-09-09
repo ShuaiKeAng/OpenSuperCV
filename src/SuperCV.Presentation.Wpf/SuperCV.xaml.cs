@@ -253,7 +253,32 @@ namespace SuperCV
             // A system-owned topmost window can split the independent CV HWNDs from the
             // main window in the native Z-order. Reassert the whole SuperCV topmost band
             // whenever the main window regains focus (including a taskbar activation).
-            CV.RestoreApplicationTopmostWindows(System.Windows.Application.Current);
+            RestoreApplicationTopmostWindows();
+        }
+
+        private void RestoreApplicationTopmostWindows()
+        {
+            if (!_shutdownStarted)
+            {
+                CV.RestoreApplicationTopmostWindows(System.Windows.Application.Current);
+            }
+        }
+
+        private void QueueApplicationTopmostRestore()
+        {
+            if (_shutdownStarted ||
+                Dispatcher.HasShutdownStarted ||
+                Dispatcher.HasShutdownFinished)
+            {
+                return;
+            }
+
+            // History changes raised off the UI thread queue the item-window synchronization
+            // at Normal priority. Run after it so the newly created CV HWND joins the same
+            // native topmost band as the main window and all existing entries.
+            _ = Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                RestoreApplicationTopmostWindows);
         }
 
 
@@ -919,6 +944,7 @@ filter_entries 只用于内部筛选和推理，绝不改变用户看到的列�
         internal void RestoreFromClipboardShortcut()
         {
             RestoreFromTray();
+            RestoreApplicationTopmostWindows();
 
             if (_shutdownStarted || !IsCollapsed)
             {
@@ -1489,6 +1515,7 @@ filter_entries 只用于内部筛选和推理，绝不改变用户看到的列�
                 {
                     Detector.RecordNewEntryAccepted(observedAtUtc);
                     StartPulseAnimation();
+                    QueueApplicationTopmostRestore();
                 }
             }
             //Dictionary<TextFormat, string> AllTextFormats= MyClipboard.GetAllTextFormats();
