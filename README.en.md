@@ -200,4 +200,14 @@ SuperCV supports **Windows 10 and Windows 11**.
 
 For feature requests, questions, or bugs, please join the discussion in [Issues](https://github.com/ShuaiKeAng/OpenSuperCV/issues). When reporting an issue, include the scenario, steps to reproduce, and expected result where possible.
 
+## Support the project
+
+If SuperCV is useful to you, you can [support it through Alipay](https://qr.alipay.com/fkx19443x3resifs2w0ns50?0&T=58659-12-11%2005:52:47).
+
+<p align="center">
+  <a href="https://qr.alipay.com/fkx19443x3resifs2w0ns50?0&T=58659-12-11%2005:52:47">
+    <img src=".github/funding/alipay.jpg" width="260" alt="Alipay sponsorship QR code" />
+  </a>
+</p>
+
 This project is licensed under the repository [LICENSE](LICENSE.txt).

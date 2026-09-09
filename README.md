@@ -207,4 +207,14 @@ SuperCV 适用于 **Windows 10 / Windows 11**。
 
 如果你有功能建议、使用问题或发现异常，欢迎前往 [Issues](https://github.com/ShuaiKeAng/OpenSuperCV/issues) 交流。提交问题时，请尽量附上使用场景、复现步骤和预期行为。
 
+## 赞助项目
+
+如果 SuperCV 对你有帮助，欢迎通过 [支付宝赞助](https://qr.alipay.com/fkx19443x3resifs2w0ns50?0&T=58659-12-11%2005:52:47)。
+
+<p align="center">
+  <a href="https://qr.alipay.com/fkx19443x3resifs2w0ns50?0&T=58659-12-11%2005:52:47">
+    <img src=".github/funding/alipay.jpg" width="260" alt="支付宝赞助收款码" />
+  </a>
+</p>
+
 本项目采用仓库中的 [LICENSE](LICENSE.txt) 许可。
