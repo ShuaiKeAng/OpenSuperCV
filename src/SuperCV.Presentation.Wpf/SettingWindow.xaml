@@ -1613,6 +1613,42 @@ Foreground="{DynamicResource Brush.Text.Muted}"/>
                                             </Viewbox>
                                         </Grid>
                                     </Button>
+                                    <Button x:Name="CheckForUpdatesButton"
+                                            Margin="3"
+                                            Height="46"
+                                            Style="{StaticResource SettingsInsetActionButtonStyle}"
+                                            Click="CheckForUpdates_Click"
+                                            AutomationProperties.Name="检查更新"
+                                            AutomationProperties.HelpText="检查是否有新版本并打开下载页面">
+                                        <Grid RenderOptions.ClearTypeHint="Enabled">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="30" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Grid.Column="0" Margin="2">
+                                                <Label Content="检查更新"
+                                                       Padding="5,3,0,0"
+                                                       FontWeight="DemiBold"
+                                                       VerticalAlignment="Top"
+                                                       FontSize="14"
+                                                       Foreground="{DynamicResource Brush.Text.Primary}" />
+                                                <Label Content="检查是否有新版本并打开下载页面"
+                                                       Padding="5,0,0,3"
+                                                       FontSize="12"
+                                                       VerticalAlignment="Bottom"
+                                                       Foreground="{DynamicResource Brush.Text.Muted}" />
+                                            </Grid>
+                                            <Viewbox Grid.Column="1"
+                                                     Width="16"
+                                                     Height="16"
+                                                     Margin="0,0,10,0"
+                                                     HorizontalAlignment="Right"
+                                                     VerticalAlignment="Center"
+                                                     IsHitTestVisible="False">
+                                                <ContentControl Content="{StaticResource Right}" />
+                                            </Viewbox>
+                                        </Grid>
+                                    </Button>
                                 </StackPanel>
                             </local:CrispShadowBorder>
 

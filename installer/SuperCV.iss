@@ -3,7 +3,7 @@
 #define MyAppExeName "SuperCV.exe"
 
 #ifndef MyAppVersion
-  #define MyAppVersion "0.9.1"
+  #define MyAppVersion "0.9.5"
 #endif
 
 #ifndef PublishDir

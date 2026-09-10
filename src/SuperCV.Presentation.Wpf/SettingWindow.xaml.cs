@@ -31,6 +31,7 @@ namespace SuperCV
         private bool _ownsWaitCursor;
         private CancellationTokenSource? _autoApplyCancellation;
         private CancellationTokenSource? _debugCancellation;
+        private CancellationTokenSource? _updateCheckCancellation;
         private Button? _shortcutCaptureButton;
         private EditableShortcut? _shortcutBeingCaptured;
         private ShortcutModifiers _capturedModifiers;
@@ -127,6 +128,104 @@ namespace SuperCV
                 Owner = this,
             };
             releaseNotes.ShowDialog();
+        }
+
+        private async void CheckForUpdates_Click(object sender, RoutedEventArgs e)
+        {
+            if (_updateCheckCancellation is not null)
+            {
+                return;
+            }
+
+            var cancellation = new CancellationTokenSource();
+            _updateCheckCancellation = cancellation;
+            CheckForUpdatesButton.IsEnabled = false;
+            AcquireWaitCursor();
+            try
+            {
+                ReleaseUpdateCheckResult result = await new GitHubReleaseUpdateService()
+                    .CheckAsync(cancellation.Token);
+                if (_isClosed || cancellation.IsCancellationRequested)
+                {
+                    return;
+                }
+
+                ShowUpdateCheckResult(result);
+            }
+            catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+            {
+            }
+            catch (Exception exception)
+            {
+                if (!_isClosed)
+                {
+                    ShowUpdateMessage(UpdateText.NetworkFailure(GetErrorMessage(exception)));
+                }
+            }
+            finally
+            {
+                if (ReferenceEquals(_updateCheckCancellation, cancellation))
+                {
+                    _updateCheckCancellation = null;
+                }
+
+                cancellation.Dispose();
+                ReleaseWaitCursor();
+                if (!_isClosed)
+                {
+                    CheckForUpdatesButton.IsEnabled = true;
+                }
+            }
+        }
+
+        private void ShowUpdateCheckResult(ReleaseUpdateCheckResult result)
+        {
+            switch (result.Status)
+            {
+                case ReleaseUpdateCheckStatus.UpToDate:
+                    ShowUpdateMessage(UpdateText.UpToDate(result.LocalVersion ?? SuperCVWindow.ApplicationVersion));
+                    break;
+
+                case ReleaseUpdateCheckStatus.UpdateAvailable:
+                    bool shouldDownload = new AlertDialog(
+                        UpdateText.UpdateAvailable(
+                            result.ReleaseTag ?? string.Empty,
+                            result.LocalVersion ?? SuperCVWindow.ApplicationVersion),
+                        "下载更新")
+                    {
+                        Owner = this,
+                        Title = "检查更新",
+                    }.ShowDialog();
+                    if (shouldDownload && Uri.TryCreate(result.DownloadUrl, UriKind.Absolute, out Uri? downloadUri))
+                    {
+                        Process.Start(new ProcessStartInfo(downloadUri.AbsoluteUri) { UseShellExecute = true });
+                    }
+                    break;
+
+                case ReleaseUpdateCheckStatus.UnsupportedVersion:
+                    ShowUpdateMessage(UpdateText.UnsupportedVersion(result.ReleaseTag ?? string.Empty));
+                    break;
+
+                case ReleaseUpdateCheckStatus.InvalidRelease:
+                    ShowUpdateMessage(UpdateText.InvalidRelease());
+                    break;
+
+                case ReleaseUpdateCheckStatus.RequestFailed:
+                    ShowUpdateMessage(UpdateText.RequestFailed(result.StatusCode));
+                    break;
+
+                default:
+                    throw new InvalidOperationException("Unknown release update-check status.");
+            }
+        }
+
+        private void ShowUpdateMessage(string message)
+        {
+            new AlertDialog(message)
+            {
+                Owner = this,
+                Title = "检查更新",
+            }.ShowDialog();
         }
 
         private async void ChangeDataRoot_Click(object sender, RoutedEventArgs e)
@@ -357,6 +456,7 @@ namespace SuperCV
             PreviewMouseWheel -= SettingWindow_PreviewMouseWheel;
             ViewModel.History.Dispose();
             _debugCancellation?.Cancel();
+            _updateCheckCancellation?.Cancel();
             ReleaseWaitCursor();
             base.OnClosed(e);
         }
@@ -1077,6 +1177,35 @@ namespace SuperCV
             }
 
             return string.IsNullOrWhiteSpace(message) ? "未知错误" : message;
+        }
+
+        private static class UpdateText
+        {
+            private static bool IsEnglish => LocalizationService.Current.IsEnglish;
+
+            internal static string UpToDate(string version) => IsEnglish
+                ? $"You're up to date. Current version: {version}."
+                : $"当前已是最新版本（{version}）。";
+
+            internal static string UpdateAvailable(string releaseTag, string currentVersion) => IsEnglish
+                ? $"A new version ({releaseTag}) is available. Your current version is {currentVersion}.\n\nOpen the download page now?"
+                : $"发现新版本 {releaseTag}（当前版本 {currentVersion}）。\n\n是否打开下载页面？";
+
+            internal static string UnsupportedVersion(string releaseTag) => IsEnglish
+                ? $"The release tag \"{releaseTag}\" is not a supported version number. Use tags such as v0.9.5."
+                : $"Release 标签“{releaseTag}”不是可识别的版本号。请使用类似 v0.9.5 的标签。";
+
+            internal static string InvalidRelease() => IsEnglish
+                ? "The latest GitHub Release does not contain a version tag."
+                : "最新 GitHub Release 未包含版本标签。";
+
+            internal static string RequestFailed(System.Net.HttpStatusCode? statusCode) => IsEnglish
+                ? $"GitHub could not return update information (HTTP {(int?)statusCode ?? 0})."
+                : $"GitHub 未能返回更新信息（HTTP {(int?)statusCode ?? 0}）。";
+
+            internal static string NetworkFailure(string error) => IsEnglish
+                ? $"Could not check for updates: {error}"
+                : $"检查更新失败：{error}";
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)

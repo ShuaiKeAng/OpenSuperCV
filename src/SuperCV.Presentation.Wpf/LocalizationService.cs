@@ -43,6 +43,8 @@ public sealed class LocalizationService : INotifyPropertyChanged, IDisposable
         ["用户协议"] = "User Agreement", ["查看隐私说明、AI 服务条款与免责声明"] = "Review privacy, AI service terms, and disclaimers",
         ["最小化用户协议"] = "Minimize user agreement", ["关闭用户协议"] = "Close user agreement",
         ["更新日志"] = "Release notes", ["查看版本的功能更新与改进"] = "Review features and improvements",
+        ["检查更新"] = "Check for updates", ["检查是否有新版本并打开下载页面"] = "Check for a new version",
+        ["下载更新"] = "Download update",
         ["关闭更新日志"] = "Close release notes",
         ["我已阅读并同意"] = "I have read and agree to ",
         ["阅读并同意用户协议"] = "Read and agree to the User Agreement", ["勾选后才能完成初始设置"] = "You must check this before completing setup",
