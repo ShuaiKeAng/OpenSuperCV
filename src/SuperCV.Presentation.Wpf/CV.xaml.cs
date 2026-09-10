@@ -2722,10 +2722,13 @@ namespace SuperCV
             }
 
             Question = "";
-            int length=WordBasedTokenEstimator.EstimateTokenCount(CVContent);
-            if (length > 10000)
+            int tokenCount = UnicodeTextTokenCountProvider?.Invoke()
+                ?? WordBasedTokenEstimator.EstimateTokenCount(CVContent);
+            int instructionTokenLimit = Setting.MaxAiContextTokens / 2;
+            if (tokenCount > instructionTokenLimit)
             {
-                var alert = new AlertDialog("内容过长，请删减重试");
+                var alert = new AlertDialog(
+                    $"内容约为 {tokenCount:N0} token，超过当前上下文档位允许的预制指令上限（{instructionTokenLimit:N0} token）。请删减内容或提高最大上下文档位后重试。");
                 alert.ShowDialog();
                 
                 return; // 直接返回，不执行后续操作
@@ -2779,15 +2782,15 @@ namespace SuperCV
                 VisualStateManager.GoToElementState(ContentGrid, "NormalState", true);
                 if (loadingState == true) 
                 { 
-                    if (response.Message != null && response.Message!= "SuperCV网络连接异常，请稍后重试！")
+                    if (response.IsError)
+                    {
+                        var alert = new AlertDialog(response.Message ?? "AI 文本处理失败，请稍后重试。");
+                        alert.ShowDialog();
+                    }
+                    else if (response.Message != null)
                     {
                         CVContent = response.Message;
                         CVChanged?.Invoke(this, EventArgs.Empty);
-                    }
-                    else if (response.Message== "SuperCV网络连接异常，请稍后重试！")
-                    {
-                        var alert = new AlertDialog("网络连接异常，请重试");
-                        alert.ShowDialog();
                     }
                     loadingState = false;
                     AIPopup.IsOpen = false;

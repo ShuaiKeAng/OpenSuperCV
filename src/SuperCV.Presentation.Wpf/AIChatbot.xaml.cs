@@ -16,7 +16,7 @@ namespace SuperCV
 {
     public partial class AIChatbot : Window, INotifyPropertyChanged
     {
-        private const int MaximumTransientRetryCount = 2;
+        private const int MaximumTransientRetryCount = AiRequestRetryPolicy.MaximumAutomaticRetryCount;
         private static IReadOnlyList<ReasoningDepthOption> CreateReasoningDepthOptions() =>
         [
             new(AiReasoningEffort.Off, LocalizationService.Current.T("思考：关闭"), LocalizationService.Current.T("直接回答；自定义接口不支持参数时也会自动回退")),
@@ -472,7 +472,7 @@ namespace SuperCV
 
                 if (!_windowToken.IsCancellationRequested)
                 {
-                    if (!IsTransientConnectionFailure(exception))
+                    if (!AiRequestRetryPolicy.IsTransientConnectionFailure(exception))
                     {
                         string alertMessage = exception is AiProtectedContextLimitExceededException
                             ? exception.Message
@@ -549,41 +549,14 @@ namespace SuperCV
                     !cancellationToken.IsCancellationRequested &&
                     Volatile.Read(ref receivedModelUpdate) == 0 &&
                     retryCount < MaximumTransientRetryCount &&
-                    IsTransientConnectionFailure(exception))
+                    AiRequestRetryPolicy.IsTransientConnectionFailure(exception))
                 {
                     retryCount++;
                     _agentConversationNeedsRebuild = true;
                     AppendTransientRetryNotice(responseMessage, retryCount);
-                    await Task.Delay(GetTransientRetryDelay(retryCount), cancellationToken);
+                    await Task.Delay(AiRequestRetryPolicy.GetRetryDelay(retryCount), cancellationToken);
                 }
             }
-        }
-
-        private static TimeSpan GetTransientRetryDelay(int retryCount) => retryCount switch
-        {
-            1 => TimeSpan.FromMilliseconds(800),
-            _ => TimeSpan.FromSeconds(2),
-        };
-
-        private static bool IsTransientConnectionFailure(Exception exception)
-        {
-            for (Exception? current = exception; current is not null; current = current.InnerException)
-            {
-                switch (current)
-                {
-                    case TimeoutException:
-                    case IOException:
-                    case OperationCanceledException:
-                        return true;
-                    case HttpRequestException { StatusCode: null }:
-                        return true;
-                    case HttpRequestException { StatusCode: { } statusCode } when
-                        (int)statusCode is 408 or 429 or >= 500:
-                        return true;
-                }
-            }
-
-            return false;
         }
 
         private void AppendTransientRetryNotice(ChatMessage responseMessage, int retryCount)

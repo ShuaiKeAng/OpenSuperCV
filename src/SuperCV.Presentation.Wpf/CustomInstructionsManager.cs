@@ -26,6 +26,8 @@ public static class CustomInstructionsManager
         public bool IsComplete { get; set; }
 
         public string? Message { get; set; }
+
+        public bool IsError { get; set; }
     }
 
     /// <summary>
@@ -183,19 +185,15 @@ public static class CustomInstructionsManager
             Message = "开始处理请求...",
         });
 
-        double timeoutSeconds = 10 + 3 * Math.Sqrt(
-            WordBasedTokenEstimator.EstimateTokenCount(session.Content));
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-        timeout.CancelAfter(TimeSpan.FromSeconds(timeoutSeconds));
-
         try
         {
             using var ai = new AI2(
                 apiKey: null,
                 provider: Setting.AIModel,
                 basePrompt: Setting.BasePrompt);
-            string response = await ai
-                .TransformTextAsync(instruction.Prompt, session.Content, timeout.Token)
+            string response = await AiRequestRetryPolicy.ExecuteAsync(
+                    token => ai.TransformTextAsync(instruction.Prompt, session.Content, token),
+                    cancellationToken)
                 .ConfigureAwait(true);
 
             if (session.IsCurrent(generation))
@@ -207,28 +205,18 @@ public static class CustomInstructionsManager
                 });
             }
         }
-        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested)
-        {
-            if (session.IsCurrent(generation))
-            {
-                session.Publish(new ResponseEventArgs
-                {
-                    IsComplete = true,
-                    Message = "SuperCV网络连接异常，请稍后重试！",
-                });
-            }
-        }
         catch (OperationCanceledException)
         {
         }
-        catch (Exception)
+        catch (Exception exception)
         {
             if (session.IsCurrent(generation))
             {
                 session.Publish(new ResponseEventArgs
                 {
                     IsComplete = true,
-                    Message = "SuperCV网络连接异常，请稍后重试！",
+                    IsError = true,
+                    Message = AiRequestRetryPolicy.DescribeFailure(exception, "AI 文本处理"),
                 });
             }
         }

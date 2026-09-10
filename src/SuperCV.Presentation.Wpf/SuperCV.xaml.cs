@@ -701,7 +701,7 @@ filter_entries 只用于内部筛选和推理，绝不改变用户看到的列�
                 }
                 catch (Exception ex)
                 {
-                    new AlertDialog($"模糊搜索失败：{ex.Message}").ShowDialog();
+                    new AlertDialog(AiRequestRetryPolicy.DescribeFailure(ex, "模糊搜索")).ShowDialog();
                 }
                 finally
                 {

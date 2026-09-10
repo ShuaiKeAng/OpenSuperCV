@@ -161,11 +161,13 @@ namespace SuperCV
             {
                 // AI2 is a lightweight adapter; the process-wide runtime owns the shared HTTP client.
                 using var ai = new AI2(_apiKey, _provider, "", _modelName);
-                AiCompletionResult response = await ai.AskWithToolsAsync(
-                    SearchInstruction,
-                    userText,
-                    SearchTools,
-                    cancellationToken);
+                AiCompletionResult response = await AiRequestRetryPolicy.ExecuteAsync(
+                        token => ai.AskWithToolsAsync(
+                            SearchInstruction,
+                            userText,
+                            SearchTools,
+                            token),
+                        cancellationToken);
 
                 // 物理白名单：只接受本次请求真实字段中实际存在的 R 编号。
                 matchedIndexes = ParseIndexesFromToolCalls(
