@@ -1358,7 +1358,7 @@ namespace SuperCV
             get => _settings.SmoothFactor;
             set
             {
-                double clampedValue = Math.Clamp(value, 5.0, 40.0);
+                double clampedValue = Math.Clamp(value, 5.0, 25.0);
 
                 if (_settings.SmoothFactor != clampedValue)
                 {

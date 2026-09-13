@@ -2,6 +2,25 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.0.0",
+      "zh": {
+        "title": "更新检查与 AI 可靠性",
+        "items": [
+          "• 新增 GitHub 更新检查，可在“关于”页面确认当前版本并跳转到下载页面。",
+          "• AI 对话、文本处理和模糊搜索遇到网络波动或服务繁忙时，会在限定时间内自动重试，并提供更清晰的失败提示。",
+          "• 预置指令的内容上限现会跟随所选最大上下文档位，并在超限时显示 token 数量和调整建议。"
+        ]
+      },
+      "en": {
+        "title": "Update checks and AI reliability",
+        "items": [
+          "• Added GitHub update checks from the About page, including the current-version status and a link to the download page.",
+          "• AI chat, text transforms, and fuzzy search now retry transient network and service failures within a bounded time window, with clearer error messages.",
+          "• Built-in instruction limits now follow the selected maximum context level and show token counts with guidance when content is too long."
+        ]
+      }
+    },
+    {
       "version": "0.9.5",
       "zh": {
         "title": "稳定性与体验",

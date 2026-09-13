@@ -49,7 +49,7 @@ public sealed record AppSettings
 
     public ClipboardTextSize TextSize { get; init; } = ClipboardTextSize.Medium;
 
-    public double SmoothFactor { get; init; } = 16.0;
+    public double SmoothFactor { get; init; } = 14.0;
 
     public double MainSurfaceOpacity { get; init; } = 1.0;
 
@@ -185,7 +185,7 @@ public sealed record AppSettings
             ThemeId = string.IsNullOrWhiteSpace(ThemeId) ? "default" : ThemeId.Trim(),
             DisplayItems = Math.Clamp(DisplayItems, 3, 6),
             TextSize = textSize,
-            SmoothFactor = Math.Clamp(SmoothFactor, 5.0, 40.0),
+            SmoothFactor = Math.Clamp(SmoothFactor, 5.0, 25.0),
             MainSurfaceOpacity = Math.Round(
                 surfaceOpacity * 20.0,
                 MidpointRounding.AwayFromZero) / 20.0,
